@@ -64,5 +64,82 @@
       </nav>
     </section>
   </main>
+  <script>
+    let port, reader, writer;
+
+    async function openSerialIfGranted(){
+      const msgEl = document.getElementById('serialStatus');
+      function setMsg(t){ if(msgEl) msgEl.textContent = t; }
+
+      if (!('serial' in navigator)) {
+        setMsg?.('Web Serial no disponible. Usa Chrome/Edge.');
+        return;
+      }
+
+      try {
+        const granted = localStorage.getItem('ebeco-serial-permission') === 'granted';
+        if (!granted) {
+          setMsg?.('Sin permiso de puerto. Vuelve a Inicio.');
+          return;
+        }
+
+        const ports = await navigator.serial.getPorts();
+        if (ports.length === 0) {
+          setMsg?.('No se encontró un puerto concedido. Vuelve a Inicio.');
+          return;
+        }
+
+        port = ports[0];
+        await port.open({ baudRate: 115200 });
+        setMsg?.('Conectado por Serial.');
+
+        // Preparar writer/reader si los necesitas en esta pantalla:
+        writer = port.writable?.getWriter?.();
+        const textDecoder = new TextDecoder();
+
+        (async () => {
+          try {
+            const r = port.readable.getReader();
+            while (true) {
+              const { value, done } = await r.read();
+              if (done) break;
+              if (value) {
+                const msg = textDecoder.decode(value);
+                console.log('Arduino:', msg);
+              }
+            }
+            r.releaseLock();
+          } catch (e) {
+            console.warn(e);
+          }
+        })();
+
+        // Ejemplo: función para enviar líneas
+        window.ebecoSend = async (text) => {
+          if (!writer) return;
+          const data = new TextEncoder().encode(text + '\n');
+          await writer.write(data);
+        };
+
+        // Cierre ordenado al salir
+        window.addEventListener('beforeunload', async () => {
+          try {
+            if (writer) { writer.releaseLock(); writer = null; }
+            if (port) { await port.close(); port = null; }
+          } catch {}
+        });
+
+      } catch (err) {
+        console.error(err);
+        setMsg?.('Error al abrir el puerto: ' + err.message);
+      }
+    }
+
+    // Llama al iniciar la pantalla
+    document.addEventListener('DOMContentLoaded', openSerialIfGranted);
+  </script>
+
+  <!-- En tu HTML puedes tener un pequeño estado -->
+  <div id="serialStatus" style="font-size:.9rem;opacity:.8;margin-top:8px">Conectando…</div>
 </body>
 </html>

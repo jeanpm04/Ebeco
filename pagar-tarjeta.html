@@ -10,12 +10,12 @@
   <main class="screen">
     <!-- Topbar -->
     <header class="topbar" role="banner">
-    <button class="btn btn--ghost" onclick="history.back()" aria-label="Volver">←</button>
-    <h1 class="topbar__title" style="flex:1">EBECO</h1>
-    <img src="assets/logo-ebeco.png" 
-        alt="Logo EBECO" 
-        class="brand__logo"
-        style="width:80px;height:80px;object-fit:contain;border-radius:50%;background:transparent;box-shadow:none" />
+      <button class="btn btn--ghost" onclick="history.back()" aria-label="Volver">←</button>
+      <h1 class="topbar__title" style="flex:1">EBECO</h1>
+      <img src="assets/logo-ebeco.png" 
+           alt="Logo EBECO" 
+           class="brand__logo"
+           style="width:80px;height:80px;object-fit:contain;border-radius:50%;background:transparent;box-shadow:none" />
     </header>
 
     <!-- Card principal con formulario -->
@@ -23,7 +23,8 @@
       <h2 id="card-payment-title">Pagar con tarjeta</h2>
 
       <!-- Formulario de pago -->
-      <form id="payment-form" class="u-grid" action="bicicleta-desbloqueada.html" method="POST">
+      <!-- Importante: quitamos action/method reales y navegamos por JS para que funcione offline -->
+      <form id="payment-form" class="u-grid" novalidate>
         <!-- Titular de la tarjeta -->
         <div class="field">
           <label for="cardholder" class="label">Titular de la tarjeta</label>
@@ -58,13 +59,90 @@
         <div class="actions">
           <button type="submit" class="btn btn--primary btn--lg">Confirmar pago</button>
         </div>
+
+        <div id="serialStatus" class="u-muted" style="margin-top:1rem;text-align:center">Preparando sistema…</div>
       </form>
     </section>
   </main>
 
   <script>
-    // Puedes agregar aquí la lógica para completar los campos con los datos de la transacción
-    // Si es necesario, también agregar validaciones en el formulario antes de permitir el envío.
+    // ==========================
+    // SERIAL EBECO: abrir si hay permiso previo
+    // ==========================
+    let port = null, writer = null;
+
+    function setStatus(t){
+      const el = document.getElementById('serialStatus');
+      if (el) el.textContent = t;
+    }
+
+    async function openSerialIfGranted(){
+      if (!('serial' in navigator)) {
+        setStatus('Web Serial no disponible (Chrome/Edge). Continuará sin hardware.');
+        return;
+      }
+      try {
+        const granted = localStorage.getItem('ebeco-serial-permission') === 'granted';
+        if (!granted) {
+          setStatus('Sin permiso de puerto. Continuará sin hardware.');
+          return;
+        }
+        const ports = await navigator.serial.getPorts();
+        if (ports.length === 0) {
+          setStatus('No se detectó puerto autorizado. Continuará sin hardware.');
+          return;
+        }
+        port = ports[0];
+        await port.open({ baudRate: 115200 });
+        writer = port.writable.getWriter();
+        setStatus('✅ Sistema conectado.');
+        // Cierre ordenado
+        window.addEventListener('beforeunload', async () => {
+          try { if (writer) writer.releaseLock(); } catch {}
+          try { if (port) await port.close(); } catch {}
+        });
+      } catch (err) {
+        console.warn(err);
+        setStatus('No se pudo abrir el puerto. Continuará sin hardware.');
+      }
+    }
+
+    async function ebecoSend(cmd){
+      try {
+        if (!writer) return; // si no hay conexión, simplemente no enviamos
+        const data = new TextEncoder().encode(cmd + '\n');
+        await writer.write(data);
+      } catch (e) {
+        // Ignorar errores para no bloquear el flujo de pago/navegación
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', openSerialIfGranted);
+
+    // ==========================
+    // FORM: validación ligera + abrir y navegar SIEMPRE
+    // ==========================
+    const form = document.getElementById('payment-form');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault(); // evitamos POST real para funcionar en archivo estático
+      // Validación mínima (puedes mejorarla según necesites)
+      const nameOk = form.cardholder.value.trim().length > 0;
+      const numOk  = form['card-number'].value.replace(/\s+/g,'').length >= 12;
+      const cvvOk  = /^\d{3,4}$/.test(form.cvv.value.trim());
+      if (!(nameOk && numOk && cvvOk)) {
+        setStatus('Revisa los datos de la tarjeta.');
+        return;
+      }
+
+      setStatus('🔓 Abriendo seguro…');
+      // Enviar comando "abrir" sin bloquear navegación
+      ebecoSend('o');
+
+      // Redirigir SIEMPRE a la próxima pantalla
+      setTimeout(() => {
+        window.location.href = 'bicicleta-desbloqueada.html';
+      }, 600); // breve pausa opcional
+    });
   </script>
 </body>
 </html>

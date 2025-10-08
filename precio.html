@@ -20,7 +20,6 @@
     <section class="card u-grid stack-top" aria-labelledby="price-title">
       <h2 id="price-title">Precio de estacionamiento</h2>
 
-      <!-- Información del precio -->
       <div class="u-grid" style="text-align:center">
         <div class="chip chip--info" style="font-size:1.25rem;justify-content:center;gap:.75rem">
           <span class="dot" aria-hidden="true"></span>
@@ -34,28 +33,100 @@
         <p class="u-muted">Confirmación del estacionamiento de la bicicleta.</p>
       </div>
 
-      <!-- Botones de confirmación y cancelación -->
+      <!-- Botones -->
       <div class="actions">
-        <a class="btn btn--primary btn--lg" href="bicicleta-protegida.html">Confirmar estacionar bicicleta</a>
+        <a id="btnConfirm" class="btn btn--primary btn--lg" href="bicicleta-protegida.html">
+          Confirmar estacionar bicicleta
+        </a>
         <a class="btn btn--danger btn--lg" href="seleccionar-accion.html">Cancelar</a>
       </div>
+
+      <div id="serialStatus" class="u-muted" style="margin-top:1rem;text-align:center">Conectando al sistema...</div>
     </section>
   </main>
 
   <script>
-    // Función para mostrar la hora actual
+    // Mostrar hora actual
     function getCurrentTime() {
       const now = new Date();
       const hours = String(now.getHours()).padStart(2, '0');
       const minutes = String(now.getMinutes()).padStart(2, '0');
       const seconds = String(now.getSeconds()).padStart(2, '0');
-      const timeString = `${hours}:${minutes}:${seconds}`;
-      document.getElementById('current-time').textContent = timeString;
+      document.getElementById('current-time').textContent = `${hours}:${minutes}:${seconds}`;
+    }
+    setInterval(getCurrentTime, 1000);
+    getCurrentTime();
+
+    // ==========================
+    // CONEXIÓN SERIAL (EBECO)
+    // ==========================
+    let port, writer;
+    const statusEl = document.getElementById('serialStatus');
+    const btnConfirm = document.getElementById('btnConfirm');
+
+    function setStatus(t) { statusEl.textContent = t; }
+
+    async function openSerialIfGranted() {
+      if (!('serial' in navigator)) {
+        setStatus('Tu navegador no soporta Web Serial.');
+        return;
+      }
+
+      try {
+        const granted = localStorage.getItem('ebeco-serial-permission') === 'granted';
+        if (!granted) {
+          setStatus('Sin permiso de conexión. Regresa al inicio.');
+          btnConfirm.disabled = true;
+          return;
+        }
+
+        const ports = await navigator.serial.getPorts();
+        if (ports.length === 0) {
+          setStatus('No se detectó puerto autorizado. Regresa al inicio.');
+          btnConfirm.disabled = true;
+          return;
+        }
+
+        port = ports[0];
+        await port.open({ baudRate: 115200 });
+        writer = port.writable.getWriter();
+        setStatus('✅ Sistema conectado.');
+
+        // Cierre ordenado si el usuario se va
+        window.addEventListener('beforeunload', async () => {
+          try {
+            writer.releaseLock();
+            await port.close();
+          } catch {}
+        });
+
+      } catch (err) {
+        console.error(err);
+        setStatus('Error al abrir puerto: ' + err.message);
+        btnConfirm.disabled = true;
+      }
     }
 
-    // Actualiza la hora cada segundo
-    setInterval(getCurrentTime, 1000);
-    getCurrentTime(); // Llamada inicial
+    // Enviar comando al Arduino
+    async function ebecoSend(cmd) {
+      if (!writer) return alert('No hay conexión con el sistema.');
+      const data = new TextEncoder().encode(cmd + '\n');
+      await writer.write(data);
+    }
+
+    // Acción al confirmar
+    btnConfirm.addEventListener('click', async () => {
+      setStatus('🔒 Cerrando seguro...');
+      await ebecoSend('c'); // comando "cerrar"
+      setTimeout(() => {
+        window.location.href = 'bicicleta-protegida.html';
+      }, 1000);
+    });
+
+    // Abrir el puerto al cargar la página
+    openSerialIfGranted();
+    
   </script>
+  
 </body>
 </html>

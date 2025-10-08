@@ -2,28 +2,22 @@
 <html lang="es">
 <head>
   <meta charset="utf-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1, viewport-fit=cover"
-  />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>EBECO — Bienvenida</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    .btn[disabled]{opacity:.6;pointer-events:none}
+    .hint{font-size:.9rem;opacity:.8;margin-top:8px}
+  </style>
 </head>
 <body class="app">
-  <!-- Contenedor principal (reutilizable) -->
   <main class="screen screen--center" role="main">
     <section class="card card--welcome" aria-labelledby="welcome-title">
       <div class="brand">
-        <!-- Coloca tu logo en /assets/logo-ebeco.svg o .png -->
-        <img
-          src="assets/logo-ebeco.svg"
-          alt="Logo EBECO"
-          class="brand__logo"
-          onerror="this.src='assets/logo-ebeco.png'"
-        />
+        <img src="assets/logo-ebeco.svg" alt="Logo EBECO" class="brand__logo" onerror="this.src='assets/logo-ebeco.png'"/>
         <h1 id="welcome-title" class="brand__title">EBECO</h1>
       </div>
 
@@ -35,22 +29,66 @@
       </div>
 
       <div class="actions">
-        <!-- El botón navegará luego (JS/Router). Por ahora, href a la siguiente pantalla. -->
-        <a class="btn btn--primary btn--lg" href="seleccionar-accion.html" aria-label="Comenzar">
+        <!-- Mejor usar button para capturar el click como “gesto de usuario” -->
+        <button id="btnStart" class="btn btn--primary btn--lg" aria-label="Comenzar">
           Comenzar
-        </a>
+        </button>
+        <div id="msg" class="hint" aria-live="polite">Sin conexión</div>
       </div>
     </section>
 
-    <!-- Pie fijo opcional para créditos o versión -->
     <footer class="footer">
       <small>© <span id="year"></span> EBECO</small>
     </footer>
   </main>
 
   <script>
-    // Relleno rápido del año; no es parte de la lógica de la app
     document.getElementById('year').textContent = new Date().getFullYear();
+
+    const btn = document.getElementById('btnStart');
+    const msg = document.getElementById('msg');
+
+    const NEXT_URL = 'seleccionar-accion.html';
+
+    function setMsg(t){ msg.textContent = t; }
+
+    async function handleStart(){
+      if (!('serial' in navigator)) {
+        // Sin Web Serial igual podemos continuar
+        setMsg('Tu navegador no soporta Web Serial. Continuando sin hardware…');
+        window.location.href = NEXT_URL;
+        return;
+      }
+
+      btn.disabled = true;
+      setMsg('Solicitando acceso al puerto…');
+
+      try {
+        // Si ya hay permiso previo, marcamos y seguimos
+        const grantedPorts = await navigator.serial.getPorts();
+        if (grantedPorts.length > 0) {
+          localStorage.setItem('ebeco-serial-permission', 'granted');
+          return; // el finally hará la navegación
+        }
+
+        // Pedimos permiso; si el usuario cancela, caerá al catch
+        const port = await navigator.serial.requestPort();
+        if (port) {
+          localStorage.setItem('ebeco-serial-permission', 'granted');
+        }
+      } catch (err) {
+        // Usuario canceló o no hay dispositivo: no pasa nada, continuamos sin hardware
+        console.warn('Permiso no concedido:', err?.name || err);
+        localStorage.removeItem('ebeco-serial-permission');
+      } finally {
+        // SIEMPRE navegar a la siguiente pantalla
+        setMsg('Continuando…');
+        window.location.href = NEXT_URL;
+      }
+    }
+
+    btn.addEventListener('click', handleStart);
   </script>
+  
 </body>
 </html>
