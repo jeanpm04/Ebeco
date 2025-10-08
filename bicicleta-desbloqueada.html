@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>EBECO — Bicicleta desbloqueada</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="app">
+  <main class="screen">
+    <!-- Topbar -->
+    <header class="topbar" role="banner">
+      <button class="btn btn--ghost" onclick="history.back()" aria-label="Volver">←</button>
+      <h1 class="topbar__title" style="flex:1">EBECO</h1>
+      <img src="assets/logo-ebeco.svg" alt="Logo EBECO" class="brand__logo"
+           style="width:40px;height:40px;object-fit:contain;border-radius:50%;background:transparent;box-shadow:none" />
+    </header>
+
+    <!-- Card principal -->
+    <section class="card u-grid stack-top" aria-labelledby="unlock-title">
+      <h2 id="unlock-title">¡Bicicleta desbloqueada!</h2>
+
+      <!-- Estado de desbloqueo con ícono -->
+      <div class="state">
+        <div class="pulse" aria-hidden="true"></div>
+        <div class="u-muted">¡Tu bicicleta está lista para ser retirada!</div>
+
+        <!-- Datos del slot y detalles -->
+        <div class="status-grid">
+          <div class="status-item">
+            <span class="status-label">Slot asignado</span>
+            <strong class="status-value">#01</strong>
+          </div>
+          <div class="status-item">
+            <span class="status-label">Estación</span>
+            <strong class="status-value">Módulo A — UCSM</strong>
+          </div>
+          <div class="status-item">
+            <span class="status-label">Hora de desbloqueo</span>
+            <strong class="status-value" id="unlock-time">Cargando...</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Botón para finalizar -->
+      <div class="actions">
+        <a class="btn btn--primary btn--lg" href="seleccionar-accion.html">Finalizar</a>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Función para mostrar la hora de desbloqueo
+    function getUnlockTime() {
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+      const timeString = `${hours}:${minutes}:${seconds}`;
+      document.getElementById('unlock-time').textContent = timeString;
+    }
+
+    // Actualiza la hora de desbloqueo cada segundo
+    setInterval(getUnlockTime, 1000);
+    getUnlockTime(); // Llamada inicial
+  </script>
+</body>
+</html>

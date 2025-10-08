@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>EBECO — Método de pago</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="app">
+  <main class="screen">
+    <!-- Topbar -->
+    <header class="topbar" role="banner">
+    <button class="btn btn--ghost" onclick="history.back()" aria-label="Volver">←</button>
+    <h1 class="topbar__title" style="flex:1">EBECO</h1>
+    <img src="assets/logo-ebeco.png" 
+        alt="Logo EBECO" 
+        class="brand__logo"
+        style="width:80px;height:80px;object-fit:contain;border-radius:50%;background:transparent;box-shadow:none" />
+    </header>
+
+    <!-- Card principal con opciones de pago -->
+    <section class="card u-grid stack-top" aria-labelledby="payment-title">
+      <h2 id="payment-title">Seleccionar método de pago</h2>
+
+      <!-- Opción Yape -->
+      <div class="payment-option">
+        <div class="payment-option__icon">
+          <img src="assets/yape.png" alt="Yape logo" class="payment-icon" />
+        </div>
+        <div class="payment-option__info">
+          <div class="u-bold">Pagar con Yape</div>
+          <small class="u-muted">Escanea el código QR para realizar el pago</small>
+        </div>
+        <button class="btn btn--primary btn--lg" id="yape-btn">
+          Seleccionar Yape
+        </button>
+      </div>
+
+      <!-- Opción Tarjeta -->
+      <div class="payment-option">
+        <div class="payment-option__icon">
+          <img src="assets/tarjeta.jpg" alt="Visa / Mastercard logo" class="payment-icon" />
+        </div>
+        <div class="payment-option__info">
+          <div class="u-bold">Pagar con tarjeta</div>
+          <small class="u-muted">Visa o Mastercard</small>
+        </div>
+        <button class="btn btn--primary btn--lg" id="card-btn">
+          Seleccionar Tarjeta
+        </button>
+      </div>
+
+      <!-- Botón de cancelar -->
+      <div class="actions">
+        <a class="btn btn--danger btn--lg" href="tiempo-transcurrido.html">Cancelar</a>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Agregar lógica para cuando se seleccione un método de pago
+    document.getElementById('yape-btn').addEventListener('click', function() {
+      alert("Escanea el código QR de Yape");
+      // Aquí podrías agregar la lógica para mostrar el QR o redirigir a una página de pago con Yape.
+    });
+
+    document.getElementById('card-btn').addEventListener('click', function() {
+      window.location.href = "pagar-tarjeta.html"; // Redirige a una pantalla donde el usuario ingrese los datos de la tarjeta
+    });
+  </script>
+</body>
+</html>

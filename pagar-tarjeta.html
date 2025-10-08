@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>EBECO — Pagar con tarjeta</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="app">
+  <main class="screen">
+    <!-- Topbar -->
+    <header class="topbar" role="banner">
+    <button class="btn btn--ghost" onclick="history.back()" aria-label="Volver">←</button>
+    <h1 class="topbar__title" style="flex:1">EBECO</h1>
+    <img src="assets/logo-ebeco.png" 
+        alt="Logo EBECO" 
+        class="brand__logo"
+        style="width:80px;height:80px;object-fit:contain;border-radius:50%;background:transparent;box-shadow:none" />
+    </header>
+
+    <!-- Card principal con formulario -->
+    <section class="card u-grid stack-top" aria-labelledby="card-payment-title">
+      <h2 id="card-payment-title">Pagar con tarjeta</h2>
+
+      <!-- Formulario de pago -->
+      <form id="payment-form" class="u-grid" action="bicicleta-desbloqueada.html" method="POST">
+        <!-- Titular de la tarjeta -->
+        <div class="field">
+          <label for="cardholder" class="label">Titular de la tarjeta</label>
+          <input type="text" id="cardholder" name="cardholder" class="input" placeholder="Nombre completo" required />
+        </div>
+
+        <!-- Número de tarjeta -->
+        <div class="field">
+          <label for="card-number" class="label">Número de tarjeta</label>
+          <input type="text" id="card-number" name="card-number" class="input" placeholder="1234 5678 9012 3456" required />
+        </div>
+
+        <!-- Fecha de vencimiento -->
+        <div class="field">
+          <label for="expiration" class="label">Fecha de vencimiento</label>
+          <input type="month" id="expiration" name="expiration" class="input" required />
+        </div>
+
+        <!-- CVV -->
+        <div class="field">
+          <label for="cvv" class="label">CVV</label>
+          <input type="text" id="cvv" name="cvv" class="input" placeholder="123" required />
+        </div>
+
+        <!-- Monto total a pagar -->
+        <div class="field">
+          <label for="total-amount" class="label">Monto a pagar</label>
+          <input type="text" id="total-amount" name="total-amount" class="input" value="S/. 3.00" readonly />
+        </div>
+
+        <!-- Botón de confirmar pago -->
+        <div class="actions">
+          <button type="submit" class="btn btn--primary btn--lg">Confirmar pago</button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <script>
+    // Puedes agregar aquí la lógica para completar los campos con los datos de la transacción
+    // Si es necesario, también agregar validaciones en el formulario antes de permitir el envío.
+  </script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>EBECO — Tiempo transcurrido</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="app">
+  <main class="screen">
+    <!-- Topbar -->
+    <header class="topbar" role="banner">
+    <button class="btn btn--ghost" onclick="history.back()" aria-label="Volver">←</button>
+    <h1 class="topbar__title" style="flex:1">EBECO</h1>
+    <img src="assets/logo-ebeco.png" 
+        alt="Logo EBECO" 
+        class="brand__logo"
+        style="width:80px;height:80px;object-fit:contain;border-radius:50%;background:transparent;box-shadow:none" />
+    </header>
+
+    <!-- Card principal con tiempo transcurrido y precio -->
+    <section class="card u-grid stack-top" aria-labelledby="time-title">
+      <h2 id="time-title">Tiempo transcurrido</h2>
+
+      <!-- Hora de llegada y hora actual -->
+      <div class="u-grid" style="text-align:center">
+        <div class="status-item">
+          <span class="status-label">Hora de llegada</span>
+          <strong class="status-value" id="arrival-time">Cargando...</strong>
+        </div>
+        <div class="status-item">
+          <span class="status-label">Hora actual</span>
+          <strong class="status-value" id="current-time">Cargando...</strong>
+        </div>
+      </div>
+
+      <!-- Tiempo transcurrido y costo total -->
+      <div class="u-grid" style="text-align:center">
+        <div class="status-item">
+          <span class="status-label">Tiempo transcurrido</span>
+          <strong class="status-value" id="elapsed-time">00:00:00</strong>
+        </div>
+        <div class="status-item">
+          <span class="status-label">Total a pagar</span>
+          <strong class="status-value" id="total-amount">S/. 0.00</strong>
+        </div>
+      </div>
+
+      <!-- Botón de pagar -->
+      <div class="actions">
+        <a class="btn btn--primary btn--lg" href="metodo-pago.html">Pagar ahora</a>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Función para actualizar la hora de llegada, hora actual, tiempo transcurrido y total a pagar
+    const arrivalTime = new Date();
+    let startTime = new Date(arrivalTime);
+    let elapsedTime = 0; // en segundos
+    let costPerHour = 3; // S/. 3 por hora
+
+    function formatTime(seconds) {
+      const hours = String(Math.floor(seconds / 3600)).padStart(2, '0');
+      const minutes = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+      const secondsFormatted = String(seconds % 60).padStart(2, '0');
+      return `${hours}:${minutes}:${secondsFormatted}`;
+    }
+
+    function updateDisplay() {
+      const currentTime = new Date();
+      elapsedTime = Math.floor((currentTime - startTime) / 1000); // en segundos
+      const totalAmount = (Math.ceil(elapsedTime / 3600) * costPerHour).toFixed(2);
+
+      document.getElementById('arrival-time').textContent = startTime.toLocaleTimeString();
+      document.getElementById('current-time').textContent = currentTime.toLocaleTimeString();
+      document.getElementById('elapsed-time').textContent = formatTime(elapsedTime);
+      document.getElementById('total-amount').textContent = `S/. ${totalAmount}`;
+    }
+
+    // Actualiza cada segundo
+    setInterval(updateDisplay, 1000);
+    updateDisplay(); // Llamada inicial
+  </script>
+</body>
+</html>

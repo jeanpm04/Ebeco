@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  />
+  <title>EBECO — Seleccionar acción</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="app">
+  <main class="screen">
+    <!-- Topbar reutilizable -->
+    <header class="topbar" role="banner">
+    <button class="btn btn--ghost" onclick="history.back()" aria-label="Volver">←</button>
+    <h1 class="topbar__title" style="flex:1">EBECO</h1>
+    <img src="assets/logo-ebeco.png" 
+        alt="Logo EBECO" 
+        class="brand__logo"
+        style="width:80px;height:80px;object-fit:contain;border-radius:50%;background:transparent;box-shadow:none" />
+    </header>
+
+
+    <section class="card u-grid" aria-labelledby="acciones-title" style="margin-top:1rem">
+      <h2 id="acciones-title" style="margin:0">Seleccionar la acción</h2>
+
+      <nav class="list" aria-label="Acciones principales">
+        <!-- Estacionar bicicleta -->
+        <a class="item" href="autenticacion.html">
+          <div style="display:flex;align-items:center;gap:.75rem">
+            <!--<span aria-hidden="true" style="font-size:1.25rem">🔒</span>-->
+            <div>
+              <div class="u-bold">Estacionar bicicleta</div>
+              <small class="u-muted">Bloquea y registra tu bici en un slot</small>
+            </div>
+          </div>
+          <span aria-hidden="true">›</span>
+        </a>
+
+        <!-- Liberar bicicleta -->
+        <a class="item" href="metodo-pago.html">
+          <div style="display:flex;align-items:center;gap:.75rem">
+            <!--<span aria-hidden="true" style="font-size:1.25rem">🔓</span>-->
+            <div>
+              <div class="u-bold">Liberar bicicleta</div>
+              <small class="u-muted">Desbloquea y realiza el pago</small>
+            </div>
+          </div>
+          <span aria-hidden="true">›</span>
+        </a>
+
+        <!-- Historial -->
+        <a class="item" href="historial.html">
+          <div style="display:flex;align-items:center;gap:.75rem">
+            <!--<span aria-hidden="true" style="font-size:1.25rem">🕘</span>-->
+            <div>
+              <div class="u-bold">Historial</div>
+              <small class="u-muted">Ingresos, salidas y pagos</small>
+            </div>
+          </div>
+          <span aria-hidden="true">›</span>
+        </a>
+      </nav>
+    </section>
+  </main>
+</body>
+</html>

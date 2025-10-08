@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  />
+  <title>EBECO — Bienvenida</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="app">
+  <!-- Contenedor principal (reutilizable) -->
+  <main class="screen screen--center" role="main">
+    <section class="card card--welcome" aria-labelledby="welcome-title">
+      <div class="brand">
+        <!-- Coloca tu logo en /assets/logo-ebeco.svg o .png -->
+        <img
+          src="assets/logo-ebeco.svg"
+          alt="Logo EBECO"
+          class="brand__logo"
+          onerror="this.src='assets/logo-ebeco.png'"
+        />
+        <h1 id="welcome-title" class="brand__title">EBECO</h1>
+      </div>
+
+      <div class="welcome">
+        <h2 class="welcome__headline">¡Bienvenido!</h2>
+        <p class="welcome__subtitle">
+          Protege tu bicicleta con la solución eco-segura con precios accesibles.
+        </p>
+      </div>
+
+      <div class="actions">
+        <!-- El botón navegará luego (JS/Router). Por ahora, href a la siguiente pantalla. -->
+        <a class="btn btn--primary btn--lg" href="seleccionar-accion.html" aria-label="Comenzar">
+          Comenzar
+        </a>
+      </div>
+    </section>
+
+    <!-- Pie fijo opcional para créditos o versión -->
+    <footer class="footer">
+      <small>© <span id="year"></span> EBECO</small>
+    </footer>
+  </main>
+
+  <script>
+    // Relleno rápido del año; no es parte de la lógica de la app
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>EBECO — Vinculando bicicleta</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="app">
+  <main class="screen">
+    <!-- Topbar -->
+    <header class="topbar" role="banner">
+    <button class="btn btn--ghost" onclick="history.back()" aria-label="Volver">←</button>
+    <h1 class="topbar__title" style="flex:1">EBECO</h1>
+    <img src="assets/logo-ebeco.png" 
+        alt="Logo EBECO" 
+        class="brand__logo"
+        style="width:80px;height:80px;object-fit:contain;border-radius:50%;background:transparent;box-shadow:none" />
+    </header>
+
+    <!-- Card principal -->
+    <section class="card u-grid stack-top" aria-labelledby="link-title">
+      <h2 id="link-title">Vinculando a la bicicleta…</h2>
+
+      <!-- Estado con animación -->
+      <div class="state">
+        <div class="pulse" aria-hidden="true"></div>
+
+        <div class="u-grid" style="text-align:center">
+          <div class="chip chip--info">
+            <span class="dot" aria-hidden="true"></span>
+            Procesando datos biométricos
+          </div>
+          <div class="u-muted">Mantén la posición frente al módulo de lectura</div>
+        </div>
+
+        <!-- Datos del slot / ubicación -->
+        <div class="status-grid">
+          <div class="status-item">
+            <span class="status-label">Slot asignado</span>
+            <strong class="status-value">#01</strong>
+          </div>
+          <div class="status-item">
+            <span class="status-label">Estación</span>
+            <strong class="status-value">Módulo A — UCSM</strong>
+          </div>
+          <div class="status-item">
+            <span class="status-label">Tiempo estimado</span>
+            <strong class="status-value">~ 5 s</strong>
+          </div>
+        </div>
+
+        <!-- Barra de progreso -->
+        <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="65" aria-label="Progreso de vinculación">
+          <span class="progress__bar" style="width:65%"></span>
+        </div>
+
+        <small class="u-muted">No retires la bicicleta hasta que el sistema lo indique.</small>
+      </div>
+
+      <div class="actions">
+        <a class="btn btn--danger btn--lg" href="autenticacion.html">Cancelar</a>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Redirige después de 5 segundos
+    setTimeout(function() {
+      window.location.href = "bicicleta-reconocida.html"; // Redirige a la pantalla de "Bicicleta reconocida"
+    }, 5000); // 5000 ms = 5 segundos
+  </script>
+</body>
+</html>

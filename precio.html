@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>EBECO — Precio de estacionamiento</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="app">
+  <main class="screen">
+    <!-- Topbar -->
+    <header class="topbar" role="banner">
+      <button class="btn btn--ghost" onclick="history.back()" aria-label="Volver">←</button>
+      <h1 class="topbar__title" style="flex:1">EBECO</h1>
+      <img src="assets/logo-ebeco.svg" alt="Logo EBECO" class="brand__logo"
+           style="width:40px;height:40px;object-fit:contain;border-radius:50%;background:transparent;box-shadow:none" />
+    </header>
+
+    <!-- Card principal con precio -->
+    <section class="card u-grid stack-top" aria-labelledby="price-title">
+      <h2 id="price-title">Precio de estacionamiento</h2>
+
+      <!-- Información del precio -->
+      <div class="u-grid" style="text-align:center">
+        <div class="chip chip--info" style="font-size:1.25rem;justify-content:center;gap:.75rem">
+          <span class="dot" aria-hidden="true"></span>
+          Estacionamiento por 1 hora
+        </div>
+        <h3 style="font-size:2.5rem; font-weight:700; margin: 1rem 0;">
+          S/. 3.00
+        </h3>
+
+        <p class="u-muted">Hora actual: <span id="current-time"></span></p>
+        <p class="u-muted">Confirmación del estacionamiento de la bicicleta.</p>
+      </div>
+
+      <!-- Botones de confirmación y cancelación -->
+      <div class="actions">
+        <a class="btn btn--primary btn--lg" href="bicicleta-protegida.html">Confirmar estacionar bicicleta</a>
+        <a class="btn btn--danger btn--lg" href="seleccionar-accion.html">Cancelar</a>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Función para mostrar la hora actual
+    function getCurrentTime() {
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+      const timeString = `${hours}:${minutes}:${seconds}`;
+      document.getElementById('current-time').textContent = timeString;
+    }
+
+    // Actualiza la hora cada segundo
+    setInterval(getCurrentTime, 1000);
+    getCurrentTime(); // Llamada inicial
+  </script>
+</body>
+</html>

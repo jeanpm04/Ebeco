@@ -1,0 +1,711 @@
+/* ==========
+   EBECO Design System (CSS único para todas las pantallas)
+   Mobile-first, reutilizable: variables, layout, cards, botones, topbar, formularios.
+========== */
+
+/* 1) Variables y reset mínimo */
+:root{
+  /* Colores base (ajustados al mockup) */
+  --green-700: #356d2b;     /* barra verde del mockup */
+  --green-600: #3b7a30;
+  --green-500: #458f39;
+  --green-100: #ecf6ea;
+
+  --gray-900: #121417;
+  --gray-700: #2b2f36;
+  --gray-600: #3b4048;
+  --gray-500: #555b66;
+  --gray-300: #c9ced6;
+  --gray-200: #e6e9ee;
+  --gray-100: #f5f6f8;
+
+  --white: #ffffff;
+  --black: #000000;
+
+  --danger-600: #d12d2d;
+
+  /* Tipografía y medidas */
+  --font-family: "Poppins", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  --radius: 16px;
+  --shadow: 0 10px 30px rgba(0,0,0,.08);
+  --shadow-elev: 0 16px 40px rgba(0,0,0,.12);
+
+  --space-1: .25rem;
+  --space-2: .5rem;
+  --space-3: .75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+
+  --max-content: 420px; /* ancho típico móvil */
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  font-family: var(--font-family);
+  color: var(--gray-900);
+  background: linear-gradient(180deg, var(--white), var(--gray-100));
+}
+
+/* 2) Layout general */
+.app {
+  display: grid;
+  min-height: 100dvh;
+  place-items: center;
+  padding: var(--space-8) var(--space-4);
+}
+
+.screen {
+  width: 100%;
+  max-width: var(--max-content);
+}
+.screen--center {
+  display: grid;
+  align-content: center;
+  gap: var(--space-6);
+}
+
+/* 3) Componentes reutilizables */
+.card {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: var(--space-8) var(--space-6);
+}
+
+/* Bloque de marca (logo + título) */
+.brand {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+.brand__logo {
+  width: 96px;
+  height: 96px;
+  object-fit: contain;
+  border-radius: 50%;
+  background: var(--green-100);
+  padding: var(--space-3);
+  box-shadow: inset 0 0 0 2px var(--green-500);
+}
+.brand__title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  color: var(--green-700);
+}
+
+/* Bienvenida */
+.welcome {
+  text-align: center;
+  margin-bottom: var(--space-6);
+}
+.welcome__headline {
+  margin: 0 0 var(--space-2);
+  font-size: 1.375rem;
+  font-weight: 700;
+}
+.welcome__subtitle {
+  margin: 0;
+  color: var(--gray-600);
+  line-height: 1.5;
+}
+
+/* Botones (reusables) */
+.btn {
+  --btn-bg: var(--gray-700);
+  --btn-color: var(--white);
+  --btn-bg-hover: var(--gray-900);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+
+  padding: .9rem 1.25rem;
+  border: 0;
+  border-radius: 12px;
+  background: var(--btn-bg);
+  color: var(--btn-color);
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform .06s ease, background .2s ease, box-shadow .2s ease;
+  box-shadow: var(--shadow);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn:active { transform: translateY(1px) scale(.99); }
+
+.btn--primary {
+  --btn-bg: var(--green-700);
+  --btn-bg-hover: var(--green-600);
+}
+.btn--danger {
+  --btn-bg: var(--danger-600);
+  --btn-bg-hover: #b32323;
+}
+.btn:hover { background: var(--btn-bg-hover); }
+.btn--lg { width: 100%; font-size: 1rem; padding: 1rem 1.25rem; }
+
+/* Contenedor de acciones */
+.actions { display: grid; gap: var(--space-3); }
+
+/* Footer */
+.footer {
+  width: 100%;
+  max-width: var(--max-content);
+  margin: 0 auto;
+  text-align: center;
+  color: var(--gray-500);
+}
+
+/* 4) Utilidades globales que usarás en otras pantallas */
+.u-grid { display: grid; gap: var(--space-4); }
+.u-center { display: grid; place-items: center; }
+.u-muted { color: var(--gray-600); }
+.u-bold { font-weight: 700; }
+.u-divider { height: 1px; background: var(--gray-200); border: 0; }
+
+/* Topbar reutilizable (para próximas pantallas) */
+.topbar {
+  background: var(--green-700);
+  color: var(--white);
+  padding: .875rem 1rem;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+.topbar__title { margin: 0; font-size: 1rem; font-weight: 700; }
+
+/* Listas y opciones (para menús/selecciones futuras) */
+.list {
+  display: grid;
+  gap: var(--space-3);
+}
+.item {
+  background: var(--white);
+  border-radius: 12px;
+  border: 1px solid var(--gray-200);
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: var(--shadow);
+}
+
+/* Formularios base (para pantallas de pago/autenticación) */
+.field { display: grid; gap: .375rem; }
+.label { font-size: .875rem; color: var(--gray-600); }
+.input, .select {
+  width: 100%;
+  padding: .875rem 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--gray-300);
+  background: var(--white);
+  font: inherit;
+}
+.input:focus, .select:focus {
+  outline: 3px solid color-mix(in srgb, var(--green-500) 25%, transparent);
+  border-color: var(--green-500);
+}
+
+/* 5) Medias para pantallas más grandes */
+@media (min-width: 480px){
+  .card { padding: var(--space-10) var(--space-8); box-shadow: var(--shadow-elev); }
+  .brand__logo { width: 112px; height: 112px; }
+  .welcome__headline { font-size: 1.5rem; }
+}
+
+/* ====== PATCH EBECO v1.1 ====== */
+
+/* Asegura que los enlaces de ítems hereden color y no subrayen */
+a { color: inherit; }
+a.item { text-decoration: none; }
+
+/* Título h2 dentro de cards */
+.card h2 {
+  margin: 0 0 var(--space-3);
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+/* Mejora visual de cada item de la lista (hover/active) */
+.item {
+  text-decoration: none;
+  color: inherit;
+  gap: .75rem;
+  transition: transform .06s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.item:hover { box-shadow: var(--shadow-elev); border-color: var(--gray-300); }
+.item:active { transform: translateY(1px) scale(.99); }
+
+/* Utilidad de icono a la izquierda */
+.icon {
+  display: inline-grid;
+  place-items: center;
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  background: var(--green-100);
+  font-size: 1.1rem;
+}
+
+/* Chevron/derecha */
+.chev { opacity: .45; font-weight: 700; }
+
+/* Botón fantasma para topbar */
+.btn--ghost {
+  background: transparent !important;
+  color: #fff !important;
+  box-shadow: none !important;
+  padding: .25rem .5rem;
+  border-radius: 8px;
+}
+.btn--ghost:hover { background: rgba(255,255,255,.15) !important; }
+
+/* Separación superior estándar para cartas bajo la topbar */
+.stack-top { margin-top: 1rem; }
+
+/* ====== PATCH EBECO v1.2 (Autenticación) ====== */
+
+/* Contenedor de opciones tipo “botón grande” */
+.tiles {
+  display: grid;
+  gap: var(--space-3);
+}
+
+/* Tarjetas táctiles (botones grandes) */
+.tile {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: .875rem;
+  padding: 1rem;
+  border: 1px solid var(--gray-200);
+  border-radius: 14px;
+  background: var(--white);
+  text-decoration: none;
+  color: inherit;
+  box-shadow: var(--shadow);
+  transition: transform .06s ease, box-shadow .2s ease, border-color .2s ease, background .2s ease;
+}
+.tile:hover { box-shadow: var(--shadow-elev); border-color: var(--gray-300); }
+.tile:active { transform: translateY(1px) scale(.99); }
+
+/* Variante (por si luego agregas otros tipos) */
+.tile--option {}
+
+/* Icono de la izquierda */
+.tile__icon {
+  display: inline-grid;
+  place-items: center;
+  width: 52px; height: 52px;
+  border-radius: 12px;
+  background: var(--green-100);
+  color: var(--green-700);
+}
+.ico { width: 26px; height: 26px; }
+
+/* Texto del tile */
+.tile__body { display: grid; gap: .125rem; }
+.tile__title { font-weight: 700; }
+
+
+
+/* (Opcional) Estados de proceso para “vinculando…” */
+/* Útil si luego haces vinculando.html con animación */
+.state {
+  display: grid;
+  place-items: center;
+  gap: var(--space-4);
+  padding: var(--space-8) var(--space-6);
+  text-align: center;
+}
+.pulse {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  background: var(--green-100);
+  position: relative;
+}
+.pulse::after {
+  content: "";
+  position: absolute; inset: 0;
+  border-radius: 50%;
+  animation: ping 1.6s infinite ease-out;
+  background: color-mix(in srgb, var(--green-500) 35%, transparent);
+}
+@keyframes ping {
+  0% { transform: scale(1); opacity: .6; }
+  70% { transform: scale(1.8); opacity: 0; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+/* ====== PATCH EBECO v1.3 (Vinculación) ====== */
+
+/* Chips de estado */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  padding: .5rem .75rem;
+  border-radius: 999px;
+  font-size: .85rem;
+  border: 1px solid var(--gray-200);
+  background: var(--gray-100);
+  color: var(--gray-700);
+}
+.chip--info {
+  border-color: color-mix(in srgb, var(--green-500) 35%, var(--gray-200));
+  background: color-mix(in srgb, var(--green-100) 65%, #fff);
+  color: var(--green-700);
+}
+.dot {
+  width: .5rem; height: .5rem; border-radius: 50%;
+  background: var(--green-500);
+  box-shadow: 0 0 0 .25rem color-mix(in srgb, var(--green-500) 25%, transparent);
+}
+
+/* Grid de datos rápidos del proceso */
+.status-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: .75rem;
+  margin-top: .5rem;
+}
+.status-item {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: 12px;
+  padding: .75rem .875rem;
+  display: grid;
+  gap: .125rem;
+  box-shadow: var(--shadow);
+}
+.status-label {
+  font-size: .775rem;
+  color: var(--gray-600);
+}
+.status-value {
+  font-size: 1rem;
+}
+@media (min-width: 520px){
+  .status-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* Barra de progreso */
+.progress {
+  width: 100%;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--gray-200);
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px var(--gray-200);
+}
+.progress__bar {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--green-500), var(--green-700));
+  transition: width .4s ease;
+}
+
+/* Ajustes visuales del bloque .state (definido en v1.2) */
+.state { padding-top: var(--space-6); padding-bottom: var(--space-6); }
+.pulse {
+  width: 68px; height: 68px;
+  background: var(--green-100);
+  border: 2px solid color-mix(in srgb, var(--green-500) 40%, transparent);
+}
+.pulse::after {
+  animation: ping 1.6s infinite ease-out;
+}
+
+/* (Opcional) variante de alerta si algo falla en la vinculación */
+.chip--warn {
+  border-color: #f3d29b;
+  background: #fff7e6;
+  color: #8a5a00;
+}
+
+
+/* ====== PATCH EBECO v1.6 (Precio de estacionamiento - Actualización) ====== */
+
+/* Información del precio */
+.chip--info {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--green-700);
+  background: var(--green-100);
+  border-color: color-mix(in srgb, var(--green-500) 35%, var(--gray-200));
+}
+
+/* Estilo del precio */
+h3 {
+  color: var(--green-700);
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+/* Botones de la acción de confirmar o cancelar */
+.actions {
+  display: grid;
+  gap: var(--space-4);
+  margin-top: var(--space-6);
+}
+
+/* Hora actual */
+.u-muted {
+  font-size: 1rem;
+  color: var(--gray-600);
+}
+
+/* ====== PATCH EBECO v1.7 (Bicicleta protegida) ====== */
+
+/* Estilo para los datos de protección */
+.state {
+  display: grid;
+  place-items: center;
+  gap: var(--space-4);
+  padding: var(--space-8) var(--space-6);
+  text-align: center;
+}
+
+/* Estilo de los status para mostrar información */
+.status-grid {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: 1fr;
+  margin-top: var(--space-4);
+}
+.status-item {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: 12px;
+  padding: var(--space-4) var(--space-6);
+  display: grid;
+  gap: var(--space-2);
+  box-shadow: var(--shadow);
+}
+.status-label {
+  font-size: .875rem;
+  color: var(--gray-600);
+}
+.status-value {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+/* Animación de pulso para la protección */
+.pulse {
+  width: 68px; height: 68px;
+  background: var(--green-100);
+  border: 2px solid color-mix(in srgb, var(--green-500) 40%, transparent);
+}
+.pulse::after {
+  animation: pulse-animation 1.6s infinite ease-out;
+}
+@keyframes pulse-animation {
+  0% { transform: scale(1); opacity: .6; }
+  70% { transform: scale(1.8); opacity: 0; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+/* Botones de acción para ir a pago o finalizar */
+.actions {
+  display: grid;
+  gap: var(--space-4);
+  margin-top: var(--space-6);
+}
+
+/* Botón de "Finalizar" y "Ir a pago" */
+.actions .btn--primary {
+  background: var(--green-700);
+}
+.actions .btn--danger {
+  background: var(--danger-600);
+}
+
+/* ====== PATCH EBECO v1.10 (Método de pago - Botones más grandes) ====== */
+
+/* Estilo para las opciones de pago */
+.payment-option {
+  display: grid;
+  grid-template-columns: 1fr; /* Solo una columna para dar más espacio */
+  align-items: center;
+  gap: var(--space-4);
+  margin-top: var(--space-6);
+  padding: var(--space-4);
+  background: var(--white);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+}
+
+/* Ajuste para la información y el ícono dentro de la opción */
+.payment-option__icon {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 64px;
+  height: 64px;
+  background: var(--green-100);
+  border-radius: 50%;
+}
+
+.payment-option__info {
+  display: grid;
+  gap: .25rem;
+}
+
+/* Hacer los iconos más grandes */
+.payment-icon {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+/* Botones con un mejor tamaño (100% de ancho para los botones) */
+.btn--primary {
+  width: 100%; /* Ahora toma el 100% del ancho del contenedor */
+  font-size: 1rem;
+  padding: 1rem;
+  border-radius: 12px;
+  background: var(--green-700);
+  color: var(--white);
+  text-decoration: none;
+  display: inline-block; /* Asegura que se vea como bloque */
+}
+
+.btn--primary:hover {
+  background-color: var(--green-600);
+}
+
+/* Botón de cancelar */
+.actions {
+  display: grid;
+  gap: var(--space-4);
+  margin-top: var(--space-6);
+}
+
+/* ====== PATCH EBECO v1.11 (Pagar con tarjeta) ====== */
+
+/* Estilo para el formulario de pago */
+.field {
+  display: grid;
+  gap: .5rem;
+}
+
+.label {
+  font-size: .875rem;
+  color: var(--gray-600);
+}
+
+.input {
+  width: 100%;
+  padding: .875rem 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--gray-300);
+  background: var(--white);
+  font: inherit;
+}
+
+.input:focus {
+  outline: 3px solid color-mix(in srgb, var(--green-500) 25%, transparent);
+  border-color: var(--green-500);
+}
+
+.actions {
+  margin-top: var(--space-6);
+}
+
+/* Botón de confirmar pago */
+.btn--primary {
+  width: 100%;
+  font-size: 1rem;
+  padding: 1rem;
+  border-radius: 12px;
+  background: var(--green-700);
+  color: var(--white);
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn--primary:hover {
+  background-color: var(--green-600);
+}
+
+/* ====== PATCH EBECO v1.12 (Bicicleta desbloqueada) ====== */
+
+/* Estilo para la visualización de desbloqueo */
+.state {
+  display: grid;
+  place-items: center;
+  gap: var(--space-4);
+  padding: var(--space-8) var(--space-6);
+  text-align: center;
+}
+
+/* Estilo de los status para mostrar información */
+.status-grid {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: 1fr;
+  margin-top: var(--space-4);
+}
+.status-item {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: 12px;
+  padding: var(--space-4) var(--space-6);
+  display: grid;
+  gap: var(--space-2);
+  box-shadow: var(--shadow);
+}
+.status-label {
+  font-size: .875rem;
+  color: var(--gray-600);
+}
+.status-value {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--green-700);
+}
+
+/* Animación de pulso para el desbloqueo */
+.pulse {
+  width: 68px; height: 68px;
+  background: var(--green-100);
+  border: 2px solid color-mix(in srgb, var(--green-500) 40%, transparent);
+}
+.pulse::after {
+  animation: pulse-animation 1.6s infinite ease-out;
+}
+@keyframes pulse-animation {
+  0% { transform: scale(1); opacity: .6; }
+  70% { transform: scale(1.8); opacity: 0; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+/* Botón de "Finalizar" */
+.actions {
+  display: grid;
+  gap: var(--space-4);
+  margin-top: var(--space-6);
+}
+
+/* Botón de "Finalizar" */
+.actions .btn--primary {
+  background: var(--green-700);
+}
+.actions .btn--danger {
+  background: var(--danger-600);
+}

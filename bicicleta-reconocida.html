@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>EBECO — Bicicleta reconocida</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="app">
+  <main class="screen">
+    <!-- Topbar -->
+    <header class="topbar" role="banner">
+    <button class="btn btn--ghost" onclick="history.back()" aria-label="Volver">←</button>
+    <h1 class="topbar__title" style="flex:1">EBECO</h1>
+    <img src="assets/logo-ebeco.png" 
+        alt="Logo EBECO" 
+        class="brand__logo"
+        style="width:80px;height:80px;object-fit:contain;border-radius:50%;background:transparent;box-shadow:none" />
+    </header>
+
+    <!-- Card principal -->
+    <section class="card u-grid stack-top" aria-labelledby="bike-title">
+      <h2 id="bike-title">¡Bicicleta reconocida!</h2>
+
+      <!-- Estado de reconocimiento con ícono -->
+      <div class="state">
+        <div class="pulse" aria-hidden="true"></div>
+        <div class="u-muted">¡Todo listo! Tu bicicleta ha sido vinculada al sistema.</div>
+
+        <!-- Datos del slot y detalles -->
+        <div class="status-grid">
+          <div class="status-item">
+            <span class="status-label">Slot asignado</span>
+            <strong class="status-value">#01</strong>
+          </div>
+          <div class="status-item">
+            <span class="status-label">Estación</span>
+            <strong class="status-value">Módulo A — UCSM</strong>
+          </div>
+          <div class="status-item">
+            <span class="status-label">Tiempo estimado</span>
+            <strong class="status-value">Listo para usar</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Botón para continuar -->
+      <div class="actions">
+        <a class="btn btn--primary btn--lg" href="precio.html">Continuar</a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
