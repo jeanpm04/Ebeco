@@ -24,6 +24,20 @@
         opacity: 0.8;
         margin-top: 8px;
       }
+      /* Opcional: estética del botón salir */
+      .btn--ghost {
+        background: transparent;
+        border: 1px solid #225d26;
+        color: #225d26;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background .2s ease, color .2s ease;
+      }
+      .btn--ghost:hover {
+        background: #225d26;
+        color: #fff;
+      }
     </style>
   </head>
   <body class="app">
@@ -39,6 +53,11 @@
           <h1 id="welcome-title" class="brand__title">EBECO</h1>
         </div>
 
+        <!-- Saludo (solo si hay sesión) -->
+        <div id="userBar" class="welcome" style="display:none; margin-bottom: .5rem;">
+          <p class="welcome__subtitle" id="userGreeting" style="margin:0;"></p>
+        </div>
+
         <div class="welcome">
           <h2 class="welcome__headline">¡Bienvenido!</h2>
           <p class="welcome__subtitle">
@@ -48,7 +67,6 @@
         </div>
 
         <div class="actions">
-          <!-- Mejor usar button para capturar el click como “gesto de usuario” -->
           <button
             id="btnStart"
             class="btn btn--primary btn--lg"
@@ -63,25 +81,49 @@
       <footer class="footer">
         <small>© <span id="year"></span> EBECO</small>
       </footer>
+
+      <!-- Botón global para cerrar sesión (solo si hay sesión) -->
+      <div style="margin-top: 1rem; text-align: center;">
+        <button id="logoutBtn" class="btn--ghost" style="display:none;">Cerrar sesión</button>
+      </div>
     </main>
 
-    <script src="app.js"></script>
+    <script src="./app.js"></script>
+    <!-- Fallback por si app.js no carga -->
+    <script>window.EBECO = window.EBECO || { isAuthed: () => false, getCurrentUser: () => null, logoutUser: () => {} };</script>
     <script>
       document.getElementById("year").textContent = new Date().getFullYear();
 
       const btn = document.getElementById("btnStart");
       const msg = document.getElementById("msg");
+      const logoutBtn = document.getElementById("logoutBtn");
+      const userBar = document.getElementById("userBar");
+      const userGreeting = document.getElementById("userGreeting");
+
+      // Si hay sesión, muestra saludo y botón salir
+      (function hydrateUserBar() {
+        if (EBECO.isAuthed && EBECO.isAuthed()) {
+          const user = EBECO.getCurrentUser ? EBECO.getCurrentUser() : null;
+          if (user) {
+            userGreeting.textContent = `Hola, ${user.name}`;
+            userBar.style.display = "block";
+            logoutBtn.style.display = "inline-flex";
+          }
+        }
+      })();
+
+      // Cerrar sesión
+      logoutBtn.addEventListener("click", () => {
+        EBECO.logoutUser && EBECO.logoutUser();
+        alert("Sesión cerrada correctamente.");
+        location.reload(); // recarga index sin sesión
+      });
 
       function setMsg(t) { msg.textContent = t; }
 
-      function nextUrl() {
-        // Si está autenticado → seleccionar-accion; si no → login
-        return EBECO.isAuthed() ? "seleccionar-accion.html" : "login.html";
-      }
-
       async function handleStart() {
-        // Si NO está autenticado, vamos directo a login (sin pedir Serial)
-        if (!EBECO.isAuthed()) {
+        // Si NO está autenticado, directo a login
+        if (!EBECO.isAuthed || !EBECO.isAuthed()) {
           window.location.href = "login.html";
           return;
         }
@@ -115,6 +157,5 @@
 
       btn.addEventListener("click", handleStart);
     </script>
-
   </body>
 </html>
