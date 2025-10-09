@@ -1,132 +1,303 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>EBECO — Precio de estacionamiento</title>
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body class="app">
-  <main class="screen">
-    <!-- Topbar -->
-    <header class="topbar" role="banner">
-      <button class="btn btn--ghost" onclick="history.back()" aria-label="Volver">←</button>
-      <h1 class="topbar__title" style="flex:1">EBECO</h1>
-      <img src="assets/logo-ebeco.svg" alt="Logo EBECO" class="brand__logo"
-           style="width:40px;height:40px;object-fit:contain;border-radius:50%;background:transparent;box-shadow:none" />
-    </header>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>EBECO — Precio de estacionamiento</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      /* Asegura que el botón conectar sea MUY visible */
+      .btn-visible {
+        background: #0ea5e9;
+        color: white;
+        border: none;
+        padding: 0.85rem 1rem;
+        border-radius: 0.75rem;
+        font-weight: 600;
+      }
+      .btn-visible[disabled] {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    </style>
+  </head>
+  <body class="app">
+    <main class="screen">
+      <!-- Topbar -->
+      <header class="topbar" role="banner">
+        <button
+          class="btn btn--ghost"
+          onclick="history.back()"
+          aria-label="Volver"
+        >
+          ←
+        </button>
+        <h1 class="topbar__title" style="flex: 1">EBECO</h1>
+        <img
+          src="assets/logo-ebeco.svg"
+          alt="Logo EBECO"
+          class="brand__logo"
+          style="
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            border-radius: 50%;
+            background: transparent;
+            box-shadow: none;
+          "
+        />
+      </header>
 
-    <!-- Card principal con precio -->
-    <section class="card u-grid stack-top" aria-labelledby="price-title">
-      <h2 id="price-title">Precio de estacionamiento</h2>
+      <!-- Card principal con precio -->
+      <section class="card u-grid stack-top" aria-labelledby="price-title">
+        <h2 id="price-title">Precio de estacionamiento</h2>
 
-      <div class="u-grid" style="text-align:center">
-        <div class="chip chip--info" style="font-size:1.25rem;justify-content:center;gap:.75rem">
-          <span class="dot" aria-hidden="true"></span>
-          Estacionamiento por 1 hora
+        <div class="u-grid" style="text-align: center">
+          <div
+            class="chip chip--info"
+            style="font-size: 1.25rem; justify-content: center; gap: 0.75rem"
+          >
+            <span class="dot" aria-hidden="true"></span>
+            Estacionamiento por 1 hora
+          </div>
+
+          <h3 style="font-size: 2.5rem; font-weight: 700; margin: 1rem 0">
+            S/. 3.00
+          </h3>
+
+          <p class="u-muted">Hora actual: <span id="current-time"></span></p>
+          <p id="card-note" class="u-muted">
+            Confirmación del estacionamiento de la bicicleta.
+          </p>
         </div>
-        <h3 style="font-size:2.5rem; font-weight:700; margin: 1rem 0;">
-          S/. 3.00
-        </h3>
 
-        <p class="u-muted">Hora actual: <span id="current-time"></span></p>
-        <p class="u-muted">Confirmación del estacionamiento de la bicicleta.</p>
-      </div>
+        <!-- Acciones -->
+        <div
+          class="actions"
+          style="display: flex; flex-direction: column; gap: 0.75rem"
+        >
+          <button
+            id="btnConfirm"
+            class="btn btn--primary btn--lg"
+            type="button"
+            data-next="bicicleta-protegida.html"
+          >
+            Confirmar estacionar bicicleta
+          </button>
 
-      <!-- Botones -->
-      <div class="actions">
-        <a id="btnConfirm" class="btn btn--primary btn--lg" href="bicicleta-protegida.html">
-          Confirmar estacionar bicicleta
-        </a>
-        <a class="btn btn--danger btn--lg" href="seleccionar-accion.html">Cancelar</a>
-      </div>
+          <a class="btn btn--danger btn--lg" href="seleccionar-accion.html"
+            >Cancelar</a
+          >
 
-      <div id="serialStatus" class="u-muted" style="margin-top:1rem;text-align:center">Conectando al sistema...</div>
-    </section>
-  </main>
+          <!-- Botón conectar MUY visible -->
+          <button id="btnConnect" class="btn-visible" type="button">
+            Conectar al dispositivo (COM)
+          </button>
+        </div>
 
-  <script>
-    // Mostrar hora actual
-    function getCurrentTime() {
-      const now = new Date();
-      const hours = String(now.getHours()).padStart(2, '0');
-      const minutes = String(now.getMinutes()).padStart(2, '0');
-      const seconds = String(now.getSeconds()).padStart(2, '0');
-      document.getElementById('current-time').textContent = `${hours}:${minutes}:${seconds}`;
-    }
-    setInterval(getCurrentTime, 1000);
-    getCurrentTime();
+        <div
+          id="serialStatus"
+          class="u-muted"
+          style="margin-top: 1rem; text-align: center"
+        >
+          Pulsa “Conectar al dispositivo” para autorizar.
+        </div>
+      </section>
+    </main>
 
-    // ==========================
-    // CONEXIÓN SERIAL (EBECO)
-    // ==========================
-    let port, writer;
-    const statusEl = document.getElementById('serialStatus');
-    const btnConfirm = document.getElementById('btnConfirm');
+    <script>
+      // ====== Reloj ======
+      function getCurrentTime() {
+        const now = new Date();
+        const hh = String(now.getHours()).padStart(2, "0");
+        const mm = String(now.getMinutes()).padStart(2, "0");
+        const ss = String(now.getSeconds()).padStart(2, "0");
+        document.getElementById(
+          "current-time"
+        ).textContent = `${hh}:${mm}:${ss}`;
+      }
+      setInterval(getCurrentTime, 1000);
+      getCurrentTime();
 
-    function setStatus(t) { statusEl.textContent = t; }
+      // ====== Web Serial ======
+      const statusEl = document.getElementById("serialStatus");
+      const noteEl = document.getElementById("card-note");
+      const btnConfirm = document.getElementById("btnConfirm");
+      const btnConnect = document.getElementById("btnConnect");
+      const nextHref = btnConfirm.dataset.next || "bicicleta-protegida.html";
 
-    async function openSerialIfGranted() {
-      if (!('serial' in navigator)) {
-        setStatus('Tu navegador no soporta Web Serial.');
-        return;
+      let port, writer, reader, textDecoder;
+      let connected = false;
+      let navTimer = null;
+
+      function setStatus(msg, tone = "muted") {
+        statusEl.textContent = msg;
+        statusEl.style.color =
+          tone === "ok" ? "#16a34a" : tone === "err" ? "#b91c1c" : "#64748b";
+        console.log("[EBECO]", msg);
+      }
+      function setNote(msg) {
+        if (noteEl) noteEl.textContent = msg;
       }
 
-      try {
-        const granted = localStorage.getItem('ebeco-serial-permission') === 'granted';
-        if (!granted) {
-          setStatus('Sin permiso de conexión. Regresa al inicio.');
-          btnConfirm.disabled = true;
-          return;
-        }
-
-        const ports = await navigator.serial.getPorts();
-        if (ports.length === 0) {
-          setStatus('No se detectó puerto autorizado. Regresa al inicio.');
-          btnConfirm.disabled = true;
-          return;
-        }
-
-        port = ports[0];
-        await port.open({ baudRate: 115200 });
-        writer = port.writable.getWriter();
-        setStatus('✅ Sistema conectado.');
-
-        // Cierre ordenado si el usuario se va
-        window.addEventListener('beforeunload', async () => {
-          try {
-            writer.releaseLock();
-            await port.close();
-          } catch {}
-        });
-
-      } catch (err) {
-        console.error(err);
-        setStatus('Error al abrir puerto: ' + err.message);
-        btnConfirm.disabled = true;
+      function setUiConnected(on) {
+        connected = on;
+        btnConnect.textContent = on
+          ? "Dispositivo conectado ✓"
+          : "Conectar al dispositivo (COM)";
+        btnConnect.disabled = false; // siempre visible / clickeable
+        setStatus(
+          on
+            ? "✅ Dispositivo conectado."
+            : "Pulsa “Conectar al dispositivo” para autorizar.",
+          on ? "ok" : "muted"
+        );
       }
-    }
 
-    // Enviar comando al Arduino
-    async function ebecoSend(cmd) {
-      if (!writer) return alert('No hay conexión con el sistema.');
-      const data = new TextEncoder().encode(cmd + '\n');
-      await writer.write(data);
-    }
+      // Conectar explícitamente (abre el selector de puerto)
+      btnConnect.addEventListener("click", async () => {
+        try {
+          await ensureConnected(true); // true = forzar diálogo requestPort
+        } catch (e) {
+          console.error(e);
+          setStatus(
+            "No se pudo abrir el puerto. ¿IDE abierto? ¿permisos?",
+            "err"
+          );
+        }
+      });
 
-    // Acción al confirmar
-    btnConfirm.addEventListener('click', async () => {
-      setStatus('🔒 Cerrando seguro...');
-      await ebecoSend('c'); // comando "cerrar"
-      setTimeout(() => {
-        window.location.href = 'bicicleta-protegida.html';
-      }, 1000);
-    });
+      // Confirmar: si no hay conexión, primero pide puerto; luego envía 'c'
+      btnConfirm.addEventListener("click", async (e) => {
+        e.preventDefault();
+        try {
+          const ok = await ensureConnected(!connected); // si no conectado, abrir selector
+          if (!ok) return;
 
-    // Abrir el puerto al cargar la página
-    openSerialIfGranted();
-    
-  </script>
-  
-</body>
+          setStatus("🔒 Cerrando seguro…");
+          setNote("Cerrando candado…");
+          await sendLine("c");
+
+          if (navTimer) clearTimeout(navTimer);
+          navTimer = setTimeout(() => {
+            console.warn("[EBECO] Fallback: navegando sin ACK");
+            window.location.href = nextHref;
+          }, 2000);
+        } catch (err) {
+          console.error(err);
+          setStatus(
+            "Error al enviar comando. Cierra el Monitor Serial del IDE.",
+            "err"
+          );
+        }
+      });
+
+      // Garantiza conexión. Si forceDialog=true, abre el chooser (COM5)
+      async function ensureConnected(forceDialog = false) {
+        if (!("serial" in navigator)) {
+          setStatus(
+            "Este navegador no soporta Web Serial. Usa Chrome/Edge en https.",
+            "err"
+          );
+          return false;
+        }
+
+        try {
+          if (!port) {
+            if (forceDialog) {
+              // Abre el diálogo para elegir COM (p.ej., COM5)
+              port = await navigator.serial.requestPort();
+            } else {
+              // Reusa un puerto previamente concedido (si lo hay)
+              const ports = await navigator.serial.getPorts();
+              if (ports.length) port = ports[0];
+              else {
+                // no hay permisos previos -> abrir diálogo
+                port = await navigator.serial.requestPort();
+              }
+            }
+          }
+
+          if (!port.readable || !port.writable) {
+            await port.open({ baudRate: 115200 });
+            await new Promise((r) => setTimeout(r, 1200)); // warmup del UNO
+            writer = port.writable.getWriter();
+            textDecoder = new TextDecoder();
+            reader = port.readable.getReader();
+            readLoop().catch((e) => console.error("readLoop", e));
+          }
+
+          setUiConnected(true);
+
+          // Cierre ordenado
+          window.addEventListener(
+            "beforeunload",
+            async () => {
+              try {
+                await reader?.cancel?.();
+              } catch {}
+              try {
+                reader?.releaseLock?.();
+              } catch {}
+              try {
+                writer?.releaseLock?.();
+              } catch {}
+              try {
+                await port?.close?.();
+              } catch {}
+            },
+            { once: true }
+          );
+
+          return true;
+        } catch (e) {
+          console.error(e);
+          setUiConnected(false);
+          return false;
+        }
+      }
+
+      // Bucle único de lectura
+      async function readLoop() {
+        let buf = "";
+        while (true) {
+          const { value, done } = await reader.read();
+          if (done) break;
+          if (!value) continue;
+
+          buf += textDecoder.decode(value);
+          const lines = buf.split(/\r?\n/);
+          buf = lines.pop() || "";
+
+          for (const raw of lines) {
+            const line = raw.trim();
+            if (!line) continue;
+            console.log("[EBECO] <", line);
+
+            if (/OPEN/i.test(line)) setNote("Candado abierto (verde).");
+            if (/CLOSE/i.test(line)) {
+              setNote("Candado cerrado (rojo).");
+              setStatus("Candado cerrado ✓", "ok");
+              if (navTimer) {
+                clearTimeout(navTimer);
+                navTimer = null;
+              }
+              setTimeout(() => (window.location.href = nextHref), 300);
+            }
+          }
+        }
+      }
+
+      // Envío de línea
+      async function sendLine(s) {
+        if (!writer) throw new Error("No hay conexión.");
+        const data = new TextEncoder().encode(s + "\n");
+        await writer.write(data);
+        console.log("[EBECO] >", s);
+      }
+    </script>
+  </body>
 </html>

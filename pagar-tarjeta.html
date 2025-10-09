@@ -1,148 +1,380 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>EBECO — Pagar con tarjeta</title>
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body class="app">
-  <main class="screen">
-    <!-- Topbar -->
-    <header class="topbar" role="banner">
-      <button class="btn btn--ghost" onclick="history.back()" aria-label="Volver">←</button>
-      <h1 class="topbar__title" style="flex:1">EBECO</h1>
-      <img src="assets/logo-ebeco.png" 
-           alt="Logo EBECO" 
-           class="brand__logo"
-           style="width:80px;height:80px;object-fit:contain;border-radius:50%;background:transparent;box-shadow:none" />
-    </header>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>EBECO — Pagar con tarjeta</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="app">
+    <main class="screen">
+      <!-- Topbar -->
+      <header class="topbar" role="banner">
+        <button
+          class="btn btn--ghost"
+          onclick="history.back()"
+          aria-label="Volver"
+        >
+          ←
+        </button>
+        <h1 class="topbar__title" style="flex: 1">EBECO</h1>
+        <img
+          src="assets/logo-ebeco.png"
+          alt="Logo EBECO"
+          class="brand__logo"
+          style="
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            border-radius: 50%;
+            background: transparent;
+            box-shadow: none;
+          "
+        />
+      </header>
 
-    <!-- Card principal con formulario -->
-    <section class="card u-grid stack-top" aria-labelledby="card-payment-title">
-      <h2 id="card-payment-title">Pagar con tarjeta</h2>
+      <!-- Card principal con formulario -->
+      <section
+        class="card u-grid stack-top"
+        aria-labelledby="card-payment-title"
+      >
+        <h2 id="card-payment-title">Pagar con tarjeta</h2>
 
-      <!-- Formulario de pago -->
-      <!-- Importante: quitamos action/method reales y navegamos por JS para que funcione offline -->
-      <form id="payment-form" class="u-grid" novalidate>
-        <!-- Titular de la tarjeta -->
-        <div class="field">
-          <label for="cardholder" class="label">Titular de la tarjeta</label>
-          <input type="text" id="cardholder" name="cardholder" class="input" placeholder="Nombre completo" required />
-        </div>
+        <form id="payment-form" class="u-grid" novalidate>
+          <div class="field">
+            <label for="cardholder" class="label">Titular de la tarjeta</label>
+            <input
+              type="text"
+              id="cardholder"
+              name="cardholder"
+              class="input"
+              placeholder="Nombre completo"
+            />
+          </div>
 
-        <!-- Número de tarjeta -->
-        <div class="field">
-          <label for="card-number" class="label">Número de tarjeta</label>
-          <input type="text" id="card-number" name="card-number" class="input" placeholder="1234 5678 9012 3456" required />
-        </div>
+          <div class="field">
+            <label for="card-number" class="label">Número de tarjeta</label>
+            <input
+              type="text"
+              id="card-number"
+              name="card-number"
+              class="input"
+              placeholder="1234 5678 9012 3456"
+            />
+          </div>
 
-        <!-- Fecha de vencimiento -->
-        <div class="field">
-          <label for="expiration" class="label">Fecha de vencimiento</label>
-          <input type="month" id="expiration" name="expiration" class="input" required />
-        </div>
+          <div class="field">
+            <label for="expiration" class="label">Fecha de vencimiento</label>
+            <input
+              type="month"
+              id="expiration"
+              name="expiration"
+              class="input"
+            />
+          </div>
 
-        <!-- CVV -->
-        <div class="field">
-          <label for="cvv" class="label">CVV</label>
-          <input type="text" id="cvv" name="cvv" class="input" placeholder="123" required />
-        </div>
+          <div class="field">
+            <label for="cvv" class="label">CVV</label>
+            <input
+              type="text"
+              id="cvv"
+              name="cvv"
+              class="input"
+              placeholder="123"
+            />
+          </div>
 
-        <!-- Monto total a pagar -->
-        <div class="field">
-          <label for="total-amount" class="label">Monto a pagar</label>
-          <input type="text" id="total-amount" name="total-amount" class="input" value="S/. 3.00" readonly />
-        </div>
+          <div class="field">
+            <label for="total-amount" class="label">Monto a pagar</label>
+            <input
+              type="text"
+              id="total-amount"
+              name="total-amount"
+              class="input"
+              value="S/. 3.00"
+              readonly
+            />
+          </div>
 
-        <!-- Botón de confirmar pago -->
-        <div class="actions">
-          <button type="submit" class="btn btn--primary btn--lg">Confirmar pago</button>
-        </div>
+          <div
+            class="actions"
+            style="display: flex; flex-direction: column; gap: 0.75rem"
+          >
+            <button
+              id="btnSubmit"
+              type="submit"
+              class="btn btn--primary btn--lg"
+            >
+              Confirmar pago
+            </button>
+            <button
+              id="btnConnect"
+              type="button"
+              class="btn btn--ghost"
+              style="display: none"
+            >
+              Conectar dispositivo
+            </button>
+          </div>
 
-        <div id="serialStatus" class="u-muted" style="margin-top:1rem;text-align:center">Preparando sistema…</div>
-      </form>
-    </section>
-  </main>
+          <div
+            id="serialStatus"
+            class="u-muted"
+            style="margin-top: 1rem; text-align: center"
+          >
+            Preparando sistema…
+          </div>
+        </form>
+      </section>
+    </main>
 
-  <script>
-    // ==========================
-    // SERIAL EBECO: abrir si hay permiso previo
-    // ==========================
-    let port = null, writer = null;
+    <script>
+      // ==========================
+      //   Web Serial robusto
+      // ==========================
+      let port = null,
+        writer = null,
+        reader = null,
+        textDecoder = null;
+      let openPromise = null; // 🔒 evita open() concurrentes
+      let navTimer = null; // fallback de navegación
 
-    function setStatus(t){
-      const el = document.getElementById('serialStatus');
-      if (el) el.textContent = t;
-    }
+      const statusEl = document.getElementById("serialStatus");
+      const btnConnect = document.getElementById("btnConnect");
+      const form = document.getElementById("payment-form");
+      const btnSubmit = document.getElementById("btnSubmit");
 
-    async function openSerialIfGranted(){
-      if (!('serial' in navigator)) {
-        setStatus('Web Serial no disponible (Chrome/Edge). Continuará sin hardware.');
-        return;
+      function setStatus(t, tone = "muted") {
+        statusEl.textContent = t;
+        statusEl.style.color =
+          tone === "ok" ? "#16a34a" : tone === "err" ? "#b91c1c" : "#64748b";
       }
-      try {
-        const granted = localStorage.getItem('ebeco-serial-permission') === 'granted';
-        if (!granted) {
-          setStatus('Sin permiso de puerto. Continuará sin hardware.');
-          return;
-        }
-        const ports = await navigator.serial.getPorts();
-        if (ports.length === 0) {
-          setStatus('No se detectó puerto autorizado. Continuará sin hardware.');
-          return;
-        }
-        port = ports[0];
-        await port.open({ baudRate: 115200 });
-        writer = port.writable.getWriter();
-        setStatus('✅ Sistema conectado.');
-        // Cierre ordenado
-        window.addEventListener('beforeunload', async () => {
-          try { if (writer) writer.releaseLock(); } catch {}
-          try { if (port) await port.close(); } catch {}
-        });
-      } catch (err) {
-        console.warn(err);
-        setStatus('No se pudo abrir el puerto. Continuará sin hardware.');
-      }
-    }
 
-    async function ebecoSend(cmd){
-      try {
-        if (!writer) return; // si no hay conexión, simplemente no enviamos
-        const data = new TextEncoder().encode(cmd + '\n');
+      // Lector único: detecta OPEN/CLOSE del Arduino
+      async function readLoop() {
+        let buf = "";
+        while (true) {
+          const { value, done } = await reader.read();
+          if (done) break;
+          if (!value) continue;
+
+          buf += textDecoder.decode(value);
+          const lines = buf.split(/\r?\n/);
+          buf = lines.pop() || "";
+
+          for (const raw of lines) {
+            const line = raw.trim();
+            if (!line) continue;
+
+            if (/OPEN/i.test(line)) {
+              setStatus("Candado abierto (verde).", "ok");
+              if (navTimer) {
+                clearTimeout(navTimer);
+                navTimer = null;
+              }
+              setTimeout(() => {
+                window.location.href = "bicicleta-desbloqueada.html";
+              }, 300);
+            }
+            if (/CLOSE/i.test(line)) {
+              setStatus("Candado cerrado (rojo).");
+            }
+          }
+        }
+      }
+
+      async function sendLine(s) {
+        if (!writer) throw new Error("No hay conexión.");
+        const data = new TextEncoder().encode(s + "\n");
         await writer.write(data);
-      } catch (e) {
-        // Ignorar errores para no bloquear el flujo de pago/navegación
-      }
-    }
-
-    document.addEventListener('DOMContentLoaded', openSerialIfGranted);
-
-    // ==========================
-    // FORM: validación ligera + abrir y navegar SIEMPRE
-    // ==========================
-    const form = document.getElementById('payment-form');
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault(); // evitamos POST real para funcionar en archivo estático
-      // Validación mínima (puedes mejorarla según necesites)
-      const nameOk = form.cardholder.value.trim().length > 0;
-      const numOk  = form['card-number'].value.replace(/\s+/g,'').length >= 12;
-      const cvvOk  = /^\d{3,4}$/.test(form.cvv.value.trim());
-      if (!(nameOk && numOk && cvvOk)) {
-        setStatus('Revisa los datos de la tarjeta.');
-        return;
+        console.log("[EBECO] >", s);
       }
 
-      setStatus('🔓 Abriendo seguro…');
-      // Enviar comando "abrir" sin bloquear navegación
-      ebecoSend('o');
+      // Abre/reusa un puerto concedido; con forceDialog puede forzar chooser
+      async function ensureConnected({ forceDialog = false } = {}) {
+        if (!("serial" in navigator)) {
+          setStatus("Web Serial no disponible (usa Chrome/Edge).", "err");
+          return false;
+        }
 
-      // Redirigir SIEMPRE a la próxima pantalla
-      setTimeout(() => {
-        window.location.href = 'bicicleta-desbloqueada.html';
-      }, 600); // breve pausa opcional
-    });
-  </script>
-</body>
+        // Si ya hay una apertura en curso, espera esa misma promesa
+        if (openPromise) {
+          try {
+            await openPromise;
+          } catch {}
+          return !!(port && port.readable && port.writable);
+        }
+
+        // Promesa única de apertura (candado)
+        openPromise = (async () => {
+          try {
+            // 1) Selección/permiso
+            if (!port) {
+              const ports = await navigator.serial.getPorts();
+              if (ports.length) {
+                port = ports[0];
+              } else if (forceDialog) {
+                // Selector con filtros para Arduino/CH340/CP210x
+                const filters = [
+                  { usbVendorId: 0x2341 }, // Arduino LLC
+                  { usbVendorId: 0x2a03 }, // Arduino.org
+                  { usbVendorId: 0x1a86 }, // CH340
+                  { usbVendorId: 0x10c4 }, // CP210x
+                ];
+                port = await navigator.serial.requestPort({ filters });
+              } else {
+                setStatus("Sin permiso previo. Pulsa “Conectar dispositivo”.");
+                btnConnect.style.display = "inline-block";
+                return false;
+              }
+            }
+
+            // 2) Abrir si no está abierto aún
+            const needsOpen = !(port.readable && port.writable);
+            if (needsOpen) {
+              await port.open({ baudRate: 115200 });
+              await new Promise((r) => setTimeout(r, 1200)); // warmup del UNO
+
+              writer = port.writable.getWriter();
+              textDecoder = new TextDecoder();
+              reader = port.readable.getReader();
+              readLoop().catch(() => {});
+            }
+
+            setStatus("✅ Sistema conectado.", "ok");
+            btnConnect.style.display = "none";
+
+            // Cierre ordenado al salir
+            window.addEventListener(
+              "beforeunload",
+              async () => {
+                try {
+                  await reader?.cancel?.();
+                } catch {}
+                try {
+                  reader?.releaseLock?.();
+                } catch {}
+                try {
+                  writer?.releaseLock?.();
+                } catch {}
+                try {
+                  await port?.close?.();
+                } catch {}
+              },
+              { once: true }
+            );
+
+            return true;
+          } catch (e) {
+            console.error("[EBECO] ensureConnected open error:", e);
+            setStatus(
+              "No se pudo abrir el puerto. ¿IDE u otra pestaña lo usa?",
+              "err"
+            );
+            // Forzar re-selección en el próximo intento
+            port = null;
+            return false;
+          } finally {
+            // libera el candado (defer para evitar carrera inmediata)
+            setTimeout(() => {
+              openPromise = null;
+            }, 0);
+          }
+        })();
+
+        return await openPromise;
+      }
+
+      // Conecta automáticamente si ya había permiso (no abre diálogo)
+      document.addEventListener("DOMContentLoaded", () => {
+        ensureConnected(); // intento silencioso
+      });
+
+      // Botón para pedir puerto si no hay permiso previo (con filtros)
+      btnConnect.addEventListener("click", async () => {
+        btnConnect.disabled = true;
+        setStatus("Abriendo selector de puertos…");
+        try {
+          const filters = [
+            { usbVendorId: 0x2341 }, // Arduino LLC
+            { usbVendorId: 0x2a03 }, // Arduino.org
+            { usbVendorId: 0x1a86 }, // CH340
+            { usbVendorId: 0x10c4 }, // CP210x
+          ];
+          // Forzamos chooser y guardamos port elegido
+          port = await navigator.serial.requestPort({ filters });
+
+          setStatus("Conectando al dispositivo…");
+          const ok = await ensureConnected(); // ya con 'port' definido
+          if (ok) {
+            const info = port.getInfo?.() || {};
+            setStatus(
+              `✅ Conectado (vendor 0x${(info.usbVendorId || 0).toString(
+                16
+              )} product 0x${(info.usbProductId || 0).toString(16)})`,
+              "ok"
+            );
+            btnConnect.style.display = "none";
+          } else {
+            setStatus(
+              "No se pudo conectar. Verifica que el IDE no tenga abierto el Monitor Serial.",
+              "err"
+            );
+            btnConnect.disabled = false;
+          }
+        } catch (e) {
+          setStatus("Selección cancelada. Vuelve a intentar.", "muted");
+          btnConnect.disabled = false;
+        }
+      });
+
+      // ==========================
+      //   Formulario (sin validación real)
+      // ==========================
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        // Evita doble clic mientras conecta/manda
+        btnSubmit.disabled = true;
+
+        // Asegura conexión: primero silencioso, luego con diálogo si hace falta
+        setStatus("Conectando al dispositivo…");
+        let ok = await ensureConnected();
+        if (!ok) ok = await ensureConnected({ forceDialog: true });
+        if (!ok) {
+          setStatus("No se pudo conectar. Usa “Conectar dispositivo”.", "err");
+          btnSubmit.disabled = false;
+          return;
+        }
+
+        // Enviar comando ABRIR (o)
+        setStatus("🔓 Abriendo seguro…");
+        try {
+          await sendLine("o"); // abrir (LED verde)
+        } catch {
+          setStatus(
+            "No se pudo enviar el comando. Cierra el Monitor Serial del IDE.",
+            "err"
+          );
+          btnSubmit.disabled = false;
+          return;
+        }
+
+        // Fallback: si no llega OPEN en 1.5 s, navegar igual
+        if (navTimer) clearTimeout(navTimer);
+        navTimer = setTimeout(() => {
+          console.warn("[EBECO] Fallback: navegar sin ACK OPEN");
+          window.location.href = "bicicleta-desbloqueada.html";
+        }, 1500);
+
+        // Rehabilitar por si no navega (si navega no importa)
+        setTimeout(() => {
+          btnSubmit.disabled = false;
+        }, 2000);
+      });
+    </script>
+  </body>
 </html>

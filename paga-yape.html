@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>EBECO — Pago con Yape</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        background: #f8fafc;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+
+      /* === HEADER (verde) === */
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #166534; /* verde EBECO */
+        padding: 0.75rem 1rem;
+        color: #fff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+      }
+
+      .topbar__title {
+        flex: 1;
+        text-align: center;
+        font-weight: 600;
+        font-size: 1.2rem;
+        color: #fff;
+      }
+
+      .btn--ghost {
+        background: none;
+        border: none;
+        font-size: 1.25rem;
+        color: #fff;
+        cursor: pointer;
+      }
+
+      .brand__logo {
+        width: 40px;
+        height: 40px;
+        object-fit: contain;
+        border-radius: 50%;
+      }
+
+      main.screen {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 2rem 1rem;
+      }
+
+      .card {
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        width: 320px;
+        text-align: center;
+        padding: 1.5rem;
+      }
+
+      h2 {
+        color: #166534;
+        font-size: 1.4rem;
+        margin-bottom: 0.75rem;
+      }
+
+      img.qr {
+        width: 240px;
+        height: 240px;
+        object-fit: contain;
+        border-radius: 0.75rem;
+        margin: 1rem 0;
+      }
+
+      .amount {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #065f46;
+        margin-bottom: 1.2rem;
+      }
+
+      .btn {
+        display: block;
+        width: 100%;
+        padding: 0.9rem;
+        border: none;
+        border-radius: 0.75rem;
+        font-size: 1rem;
+        font-weight: 600;
+        color: white;
+        cursor: pointer;
+        transition: background 0.2s;
+        margin-bottom: 0.5rem;
+      }
+
+      .btn--primary {
+        background-color: #16a34a;
+      }
+
+      .btn--primary:hover {
+        background-color: #15803d;
+      }
+
+      .btn--danger {
+        background-color: #dc2626;
+      }
+
+      .btn--danger:hover {
+        background-color: #b91c1c;
+      }
+    </style>
+  </head>
+
+  <body class="app">
+    <!-- Topbar -->
+    <header class="topbar" role="banner">
+      <button
+        class="btn btn--ghost"
+        onclick="history.back()"
+        aria-label="Volver"
+      >
+        ←
+      </button>
+      <h1 class="topbar__title" style="flex: 1">EBECO</h1>
+      <img
+        src="assets/logo-ebeco.png"
+        alt="Logo EBECO"
+        class="brand__logo"
+        style="
+          width: 80px;
+          height: 80px;
+          object-fit: contain;
+          border-radius: 50%;
+          background: transparent;
+          box-shadow: none;
+        "
+      />
+    </header>
+
+    <!-- Contenido principal -->
+    <main class="screen">
+      <div class="card">
+        <h2>Pago con Yape</h2>
+        <img src="assets/yape-pago.jpeg" alt="QR Yape - EBECO" class="qr" />
+        <div class="amount">S/. 3.00</div>
+        <button class="btn btn--primary" id="btnSimular">
+          Simular pago Yape
+        </button>
+        <button class="btn btn--danger" onclick="history.back()">
+          Cancelar
+        </button>
+      </div>
+    </main>
+
+    <script>
+      document.getElementById("btnSimular").addEventListener("click", () => {
+        alert(
+          "✅ Pago Yape simulado correctamente.\nGracias por su pago de S/. 3.00."
+        );
+        // Puedes redirigir a otra página si lo deseas:
+        // window.location.href = 'bicicleta-protegida.html';
+      });
+    </script>
+  </body>
+</html>
