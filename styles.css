@@ -709,3 +709,25 @@ h3 {
 .actions .btn--danger {
   background: var(--danger-600);
 }
+
+/* ====== PATCH EBECO v1.13 (Historial) ====== */
+
+/* La lista de historial ya está usando .list y .item de las otras pantallas */
+.list {
+  display: grid;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.item {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: 12px;
+  padding: var(--space-4);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: var(--shadow);
+}
+.item .u-bold { font-weight: 700; }
+.item .u-muted { color: var(--gray-600); font-size: .875rem; }

@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>EBECO — Historial</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="app">
+  <main class="screen">
+    <!-- Topbar -->
+    <header class="topbar" role="banner">
+    <button class="btn btn--ghost" onclick="history.back()" aria-label="Volver">←</button>
+    <h1 class="topbar__title" style="flex:1">EBECO</h1>
+    <img src="assets/logo-ebeco.png" 
+        alt="Logo EBECO" 
+        class="brand__logo"
+        style="width:80px;height:80px;object-fit:contain;border-radius:50%;background:transparent;box-shadow:none" />
+    </header>
+
+    <!-- Card principal -->
+    <section class="card u-grid stack-top" aria-labelledby="history-title">
+      <h2 id="history-title">Historial de acciones</h2>
+      <p class="u-muted">Consulta tus estacionamientos, liberaciones y pagos anteriores.</p>
+
+      <!-- Lista de historial -->
+      <div class="list">
+        <!-- Ejemplo de registro -->
+        <div class="item">
+          <div>
+            <div class="u-bold">Estacionar bicicleta</div>
+            <small class="u-muted">Módulo A — UCSM | 08/10/2025 09:30</small>
+          </div>
+          <div class="u-muted">S/. 3.00</div>
+        </div>
+
+        <div class="item">
+          <div>
+            <div class="u-bold">Liberar bicicleta</div>
+            <small class="u-muted">Módulo A — UCSM | 08/10/2025 11:00</small>
+          </div>
+          <div class="u-muted">S/. 6.00</div>
+        </div>
+
+        <div class="item">
+          <div>
+            <div class="u-bold">Estacionar bicicleta</div>
+            <small class="u-muted">Módulo B — UCSM | 07/10/2025 14:15</small>
+          </div>
+          <div class="u-muted">S/. 3.00</div>
+        </div>
+
+        <!-- Más registros se agregarían dinámicamente -->
+      </div>
+    </section>
+  </main>
+</body>
+</html>
