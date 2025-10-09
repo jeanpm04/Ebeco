@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>EBECO — Registro</title>
+
+  <!-- Fuentes + estilos globales -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="app">
+  <main class="screen screen--center">
+    <section class="card" style="max-width:420px">
+      <div class="brand" style="justify-content:center">
+        <img src="assets/logo-ebeco.png" alt="EBECO" class="brand__logo" />
+      </div>
+      <h1 class="brand__title" style="text-align:center">Crear cuenta</h1>
+
+      <form id="regForm" class="stack">
+        <label>
+          Nombre y apellido
+          <input type="text" id="name" required placeholder="Juan Pérez" />
+        </label>
+        <label>
+          Correo
+          <input type="email" id="email" required placeholder="tucorreo@dominio.com" />
+        </label>
+        <label>
+          Contraseña
+          <input type="password" id="password" required minlength="6" placeholder="Mínimo 6 caracteres" />
+        </label>
+        <button class="btn btn--primary" type="submit">Registrarme</button>
+      </form>
+
+      <p class="muted" style="text-align:center;margin-top:12px">
+        ¿Ya tienes cuenta? <a href="login.html">Inicia sesión</a>
+      </p>
+    </section>
+  </main>
+
+  <!-- App state (auth demo) -->
+  <script src="./app.js"></script>
+  <!-- Fallback por si app.js no carga -->
+  <script>window.EBECO = window.EBECO || { isAuthed: () => false };</script>
+
+  <script>
+    // Si ya está autenticado, entra directo
+    if (EBECO.isAuthed()) location.href = "seleccionar-accion.html";
+
+    document.getElementById("regForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const body = {
+        name: document.getElementById("name").value.trim(),
+        email: document.getElementById("email").value.trim(),
+        password: document.getElementById("password").value
+      };
+      try {
+        EBECO.registerUser(body); // inicia sesión automáticamente
+        location.href = "seleccionar-accion.html";
+      } catch (err) {
+        alert(err.message || "No se pudo registrar.");
+      }
+    });
+  </script>
+</body>
+</html>

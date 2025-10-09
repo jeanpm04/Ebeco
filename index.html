@@ -65,50 +65,49 @@
       </footer>
     </main>
 
+    <script src="app.js"></script>
     <script>
       document.getElementById("year").textContent = new Date().getFullYear();
 
       const btn = document.getElementById("btnStart");
       const msg = document.getElementById("msg");
 
-      const NEXT_URL = "seleccionar-accion.html";
+      function setMsg(t) { msg.textContent = t; }
 
-      function setMsg(t) {
-        msg.textContent = t;
+      function nextUrl() {
+        // Si está autenticado → seleccionar-accion; si no → login
+        return EBECO.isAuthed() ? "seleccionar-accion.html" : "login.html";
       }
 
       async function handleStart() {
+        // Si NO está autenticado, vamos directo a login (sin pedir Serial)
+        if (!EBECO.isAuthed()) {
+          window.location.href = "login.html";
+          return;
+        }
+
+        const NEXT_URL = "seleccionar-accion.html";
+
         if (!("serial" in navigator)) {
-          // Sin Web Serial igual podemos continuar
-          setMsg(
-            "Tu navegador no soporta Web Serial. Continuando sin hardware…"
-          );
+          setMsg("Tu navegador no soporta Web Serial. Continuando sin hardware…");
           window.location.href = NEXT_URL;
           return;
         }
 
         btn.disabled = true;
         setMsg("Solicitando acceso al puerto…");
-
         try {
-          // Si ya hay permiso previo, marcamos y seguimos
           const grantedPorts = await navigator.serial.getPorts();
           if (grantedPorts.length > 0) {
             localStorage.setItem("ebeco-serial-permission", "granted");
-            return; // el finally hará la navegación
+            return;
           }
-
-          // Pedimos permiso; si el usuario cancela, caerá al catch
           const port = await navigator.serial.requestPort();
-          if (port) {
-            localStorage.setItem("ebeco-serial-permission", "granted");
-          }
+          if (port) localStorage.setItem("ebeco-serial-permission", "granted");
         } catch (err) {
-          // Usuario canceló o no hay dispositivo: no pasa nada, continuamos sin hardware
           console.warn("Permiso no concedido:", err?.name || err);
           localStorage.removeItem("ebeco-serial-permission");
         } finally {
-          // SIEMPRE navegar a la siguiente pantalla
           setMsg("Continuando…");
           window.location.href = NEXT_URL;
         }
@@ -116,5 +115,6 @@
 
       btn.addEventListener("click", handleStart);
     </script>
+
   </body>
 </html>
