@@ -818,3 +818,17 @@ input:focus {
 .muted a:hover {
   text-decoration: underline;
 }
+.btn--ghost {
+  background: transparent;
+  border: 1px solid #225d26;
+  color: #225d26;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.btn--ghost:hover {
+  background: #225d26;
+  color: #fff;
+}

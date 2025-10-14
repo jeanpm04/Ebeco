@@ -1,88 +1,163 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>EBECO — Registro</title>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>EBECO — Registro</title>
 
-  <!-- Fuentes + estilos globales -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body class="app">
-  <main class="screen screen--center">
-    <section class="card" style="max-width:420px">
-      <div class="brand" style="justify-content:center">
-        <img src="assets/logo-ebeco.png" alt="EBECO" class="brand__logo" />
-      </div>
-      <h1 class="brand__title" style="text-align:center">Crear cuenta</h1>
-
-      <form id="regForm" class="stack">
-        <label>
-          Nombre y apellido
-          <input type="text" id="name" required placeholder="Juan Pérez" />
-        </label>
-        <label>
-          Correo
-          <input type="email" id="email" required placeholder="tucorreo@dominio.com" />
-        </label>
-        <label>
-          Contraseña
-          <input type="password" id="password" required minlength="6" placeholder="Mínimo 6 caracteres" />
-        </label>
-        <button class="btn btn--primary" type="submit">Registrarme</button>
-      </form>
-
-      <p class="muted" style="text-align:center;margin-top:12px">
-        ¿Ya tienes cuenta? <a href="login.html">Inicia sesión</a>
-      </p>
-    </section>
-  </main>
-
-  <script>
-    // --- Funciones de autenticación ---
-    const EBECO = {
-      registerUser({ name, email, password }) {
-        const user = { name, email, password };
-        localStorage.setItem("user", JSON.stringify(user));
-        localStorage.setItem("isAuthed", "true");
-      },
-      isAuthed() {
-        return localStorage.getItem("isAuthed") === "true";
-      },
-      getUser() {
-        const data = localStorage.getItem("user");
-        return data ? JSON.parse(data) : null;
+    <!-- Fuentes + estilos globales -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+      .plan-fieldset {
+        margin-top: 0.75rem;
+        border: 1px solid #e6e6e6;
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
       }
-    };
+      .plan-fieldset legend {
+        font-weight: 600;
+        padding: 0 0.25rem;
+      }
+      .plan-option {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        padding: 0.35rem 0;
+      }
+      .hint {
+        font-size: 0.9rem;
+        opacity: 0.85;
+        margin-top: 0.25rem;
+      }
+    </style>
+  </head>
+  <body class="app">
+    <main class="screen screen--center">
+      <section class="card" style="max-width: 420px">
+        <div class="brand" style="justify-content: center">
+          <img src="assets/logo-ebeco.png" alt="EBECO" class="brand__logo" />
+        </div>
+        <h1 class="brand__title" style="text-align: center">Crear cuenta</h1>
 
-    // Si ya está autenticado, entra directo
-    if (EBECO.isAuthed()) {
-      location.href = "seleccionar-accion.html";
-    }
+        <form id="regForm" class="stack" autocomplete="on">
+          <label>
+            Nombre y apellido
+            <input type="text" id="name" required placeholder="Juan Pérez" />
+          </label>
 
-    // Manejo del formulario de registro
-    document.getElementById("regForm").addEventListener("submit", (e) => {
-      e.preventDefault();
+          <label>
+            Correo
+            <input
+              type="email"
+              id="email"
+              required
+              placeholder="tucorreo@dominio.com"
+            />
+          </label>
 
-      const name = document.getElementById("name").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value;
+          <label>
+            Contraseña
+            <input
+              type="password"
+              id="password"
+              required
+              minlength="6"
+              placeholder="Mínimo 6 caracteres"
+            />
+          </label>
 
-      if (!name || !email || !password) {
-        alert("Por favor completa todos los campos.");
-        return;
+          <!-- NUEVO: selección de plan -->
+          <fieldset class="plan-fieldset">
+            <legend>Elige tu plan</legend>
+
+            <label class="plan-option">
+              <input type="radio" name="plan" value="basico" required />
+              <span
+                ><strong>Básico</strong> — S/ 25/mes ·
+                <small>Hasta 20 h · vigilancia</small></span
+              >
+            </label>
+
+            <label class="plan-option">
+              <input type="radio" name="plan" value="estandar" />
+              <span
+                ><strong>Estándar</strong> — S/ 35/mes ·
+                <small>Uso ilimitado (1 sede) + carga solar</small></span
+              >
+            </label>
+
+            <label class="plan-option">
+              <input type="radio" name="plan" value="premium" />
+              <span
+                ><strong>Premium</strong> — S/ 45/mes ·
+                <small>Todas las sedes + soporte 24 h</small></span
+              >
+            </label>
+
+            <p class="hint">Podrás cambiar de plan después.</p>
+          </fieldset>
+
+          <button class="btn btn--primary" type="submit">Registrarme</button>
+          <div id="msg" class="hint" aria-live="polite"></div>
+        </form>
+
+        <p class="muted" style="text-align: center; margin-top: 12px">
+          ¿Ya tienes cuenta? <a href="login.html">Inicia sesión</a>
+        </p>
+      </section>
+    </main>
+
+    <script>
+      // --- Funciones de autenticación ---
+      const EBECO = {
+        registerUser({ name, email, password }) {
+          const user = { name, email, password };
+          localStorage.setItem("user", JSON.stringify(user));
+          localStorage.setItem("isAuthed", "true");
+        },
+        isAuthed() {
+          return localStorage.getItem("isAuthed") === "true";
+        },
+        getUser() {
+          const data = localStorage.getItem("user");
+          return data ? JSON.parse(data) : null;
+        },
+      };
+
+      // Si ya está autenticado, entra directo
+      if (EBECO.isAuthed()) {
+        location.href = "seleccionar-accion.html";
       }
 
-      // Guardar en localStorage
-      EBECO.registerUser({ name, email, password });
+      // Manejo del formulario de registro
+      document.getElementById("regForm").addEventListener("submit", (e) => {
+        e.preventDefault();
 
-      // Redirigir después del registro
-      alert("Registro exitoso. Bienvenido, " + name + "!");
-      location.href = "seleccionar-accion.html";
-    });
-  </script>
-</body>
+        const name = document.getElementById("name").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value;
+
+        if (!name || !email || !password) {
+          alert("Por favor completa todos los campos.");
+          return;
+        }
+
+        // Guardar en localStorage
+        EBECO.registerUser({ name, email, password });
+
+        // Redirigir después del registro
+        alert("Registro exitoso. Bienvenido, " + name + "!");
+        location.href = "seleccionar-accion.html";
+      });
+    </script>
+  </body>
 </html>
