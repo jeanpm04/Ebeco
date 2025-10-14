@@ -18,7 +18,6 @@
         min-height: 100vh;
       }
 
-      /* === HEADER (verde) === */
       .topbar {
         display: flex;
         align-items: center;
@@ -133,19 +132,7 @@
         ←
       </button>
       <h1 class="topbar__title" style="flex: 1">EBECO</h1>
-      <img
-        src="assets/logo-ebeco.png"
-        alt="Logo EBECO"
-        class="brand__logo"
-        style="
-          width: 80px;
-          height: 80px;
-          object-fit: contain;
-          border-radius: 50%;
-          background: transparent;
-          box-shadow: none;
-        "
-      />
+      <img src="assets/logo-ebeco.png" alt="Logo EBECO" class="brand__logo" />
     </header>
 
     <!-- Contenido principal -->
@@ -164,12 +151,175 @@
     </main>
 
     <script>
-      document.getElementById("btnSimular").addEventListener("click", () => {
+      // ==========================
+      //   Web Serial robusto
+      // ==========================
+      let port = null,
+        writer = null,
+        reader = null,
+        textDecoder = null;
+      let openPromise = null; // 🔒 evita open() concurrentes
+      let navTimer = null; // fallback de navegación
+      let isConnected = false; // Asegura que solo intentemos enviar un comando cuando estemos conectados.
+
+      const statusEl = document.getElementById("serialStatus");
+      const btnSimular = document.getElementById("btnSimular");
+
+      function setStatus(t, tone = "muted") {
+        statusEl.textContent = t;
+        statusEl.style.color =
+          tone === "ok" ? "#16a34a" : tone === "err" ? "#b91c1c" : "#64748b";
+      }
+
+      // Conexión al puerto serial
+      async function ensureConnected({ forceDialog = false } = {}) {
+        if (!("serial" in navigator)) {
+          setStatus("Web Serial no disponible (usa Chrome/Edge).", "err");
+          return false;
+        }
+
+        // Si ya hay una apertura en curso, espera esa misma promesa
+        if (openPromise) {
+          try {
+            await openPromise;
+          } catch {}
+          return !!(port && port.readable && port.writable);
+        }
+
+        openPromise = (async () => {
+          try {
+            if (!port) {
+              const ports = await navigator.serial.getPorts();
+              if (ports.length) {
+                port = ports[0];
+              } else if (forceDialog) {
+                const filters = [
+                  { usbVendorId: 0x2341 }, // Arduino LLC
+                  { usbVendorId: 0x2a03 }, // Arduino.org
+                  { usbVendorId: 0x1a86 }, // CH340
+                  { usbVendorId: 0x10c4 }, // CP210x
+                ];
+                port = await navigator.serial.requestPort({ filters });
+              } else {
+                setStatus("Sin permiso previo. Pulsa “Conectar dispositivo”.");
+                return false;
+              }
+            }
+
+            const needsOpen = !(port.readable && port.writable);
+            if (needsOpen) {
+              await port.open({ baudRate: 115200 });
+              await new Promise((r) => setTimeout(r, 1200)); // warmup del UNO
+
+              writer = port.writable.getWriter();
+              textDecoder = new TextDecoder();
+              reader = port.readable.getReader();
+              readLoop().catch(() => {});
+            }
+
+            setStatus("✅ Sistema conectado.", "ok");
+            isConnected = true;
+            return true;
+          } catch (e) {
+            console.error("[EBECO] ensureConnected open error:", e);
+            setStatus(
+              "No se pudo abrir el puerto. ¿IDE u otra pestaña lo usa?",
+              "err"
+            );
+            port = null;
+            isConnected = false;
+            return false;
+          } finally {
+            setTimeout(() => {
+              openPromise = null;
+            }, 0);
+          }
+        })();
+
+        return await openPromise;
+      }
+
+      // Lector de puerto serial para obtener respuesta de Arduino
+      async function readLoop() {
+        let buf = "";
+        while (true) {
+          const { value, done } = await reader.read();
+          if (done) break;
+          if (!value) continue;
+
+          buf += textDecoder.decode(value);
+          const lines = buf.split(/\r?\n/);
+          buf = lines.pop() || "";
+
+          for (const raw of lines) {
+            const line = raw.trim();
+            if (!line) continue;
+
+            console.log("Recibido desde Arduino:", line); // Log para ver la respuesta
+
+            // Si la respuesta es OPEN, redirige
+            if (/OPEN/i.test(line)) {
+              setStatus("Candado abierto (verde).", "ok");
+              if (navTimer) {
+                clearTimeout(navTimer);
+                navTimer = null;
+              }
+
+              // Redirigir después de recibir OPEN, pero también redirigir inmediatamente al hacer clic
+              setTimeout(() => {
+                console.log("Redirigiendo a bicicleta-desbloqueada.html");
+                window.location.href = "bicicleta-desbloqueada.html";
+              }, 300);
+            }
+            if (/CLOSE/i.test(line)) {
+              setStatus("Candado cerrado (rojo).");
+            }
+          }
+        }
+      }
+
+      // Enviar comando de apertura al Arduino
+      async function sendLine(s) {
+        if (!writer) throw new Error("No hay conexión.");
+        const data = new TextEncoder().encode(s + "\n");
+        await writer.write(data);
+        console.log("[EBECO] >", s);
+      }
+
+      // Función para simular el pago
+      btnSimular.addEventListener("click", async () => {
         alert(
           "✅ Pago Yape simulado correctamente.\nGracias por su pago de S/. 3.00."
         );
-        // Puedes redirigir a otra página si lo deseas:
-        // window.location.href = 'bicicleta-protegida.html';
+
+        // Redirigir inmediatamente sin esperar la respuesta del Arduino
+        window.location.href = "bicicleta-desbloqueada.html";
+
+        // Conectar al dispositivo serial
+        const ok = await ensureConnected();
+        if (!ok || !isConnected) {
+          setStatus("No se pudo conectar. Usa “Conectar dispositivo”.", "err");
+          return;
+        }
+
+        // Enviar comando para abrir el candado (simular desbloqueo)
+        setStatus("🔓 Abriendo seguro...");
+        try {
+          await sendLine("o"); // Comando para abrir el candado
+        } catch {
+          setStatus(
+            "No se pudo enviar el comando. Cierra el Monitor Serial del IDE.",
+            "err"
+          );
+          return;
+        }
+
+        // Si no llega respuesta dentro de 1.5 segundos, redirige
+        if (navTimer) clearTimeout(navTimer);
+        navTimer = setTimeout(() => {
+          console.warn("[EBECO] Fallback: navegar sin ACK OPEN");
+          window.location.href = "bicicleta-desbloqueada.html";
+        }, 1500);
       });
     </script>
   </body>

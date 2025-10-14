@@ -32,7 +32,7 @@
         padding: 0.5rem 1rem;
         border-radius: 8px;
         cursor: pointer;
-        transition: background .2s ease, color .2s ease;
+        transition: background 0.2s ease, color 0.2s ease;
       }
       .btn--ghost:hover {
         background: #225d26;
@@ -54,8 +54,12 @@
         </div>
 
         <!-- Saludo (solo si hay sesión) -->
-        <div id="userBar" class="welcome" style="display:none; margin-bottom: .5rem;">
-          <p class="welcome__subtitle" id="userGreeting" style="margin:0;"></p>
+        <div
+          id="userBar"
+          class="welcome"
+          style="display: none; margin-bottom: 0.5rem"
+        >
+          <p class="welcome__subtitle" id="userGreeting" style="margin: 0"></p>
         </div>
 
         <div class="welcome">
@@ -83,14 +87,22 @@
       </footer>
 
       <!-- Botón global para cerrar sesión (solo si hay sesión) -->
-      <div style="margin-top: 1rem; text-align: center;">
-        <button id="logoutBtn" class="btn--ghost" style="display:none;">Cerrar sesión</button>
+      <div style="margin-top: 1rem; text-align: center">
+        <button id="logoutBtn" class="btn--ghost" style="display: none">
+          Cerrar sesión
+        </button>
       </div>
     </main>
 
     <script src="./app.js"></script>
     <!-- Fallback por si app.js no carga -->
-    <script>window.EBECO = window.EBECO || { isAuthed: () => false, getCurrentUser: () => null, logoutUser: () => {} };</script>
+    <script>
+      window.EBECO = window.EBECO || {
+        isAuthed: () => false,
+        getCurrentUser: () => null,
+        logoutUser: () => {},
+      };
+    </script>
     <script>
       document.getElementById("year").textContent = new Date().getFullYear();
 
@@ -119,7 +131,9 @@
         location.reload(); // recarga index sin sesión
       });
 
-      function setMsg(t) { msg.textContent = t; }
+      function setMsg(t) {
+        msg.textContent = t;
+      }
 
       async function handleStart() {
         // Si NO está autenticado, directo a login
@@ -131,7 +145,9 @@
         const NEXT_URL = "seleccionar-accion.html";
 
         if (!("serial" in navigator)) {
-          setMsg("Tu navegador no soporta Web Serial. Continuando sin hardware…");
+          setMsg(
+            "Tu navegador no soporta Web Serial. Continuando sin hardware…"
+          );
           window.location.href = NEXT_URL;
           return;
         }
