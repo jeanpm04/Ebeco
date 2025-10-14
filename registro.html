@@ -10,6 +10,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    .plan-fieldset { margin-top: .75rem; border: 1px solid #e6e6e6; border-radius: 10px; padding: .75rem 1rem; }
+    .plan-fieldset legend { font-weight: 600; padding: 0 .25rem; }
+    .plan-option { display:flex; gap:.5rem; align-items:center; padding:.35rem 0; }
+    .hint { font-size:.9rem; opacity:.85; margin-top:.25rem; }
+  </style>
 </head>
 <body class="app">
   <main class="screen screen--center">
@@ -19,20 +25,46 @@
       </div>
       <h1 class="brand__title" style="text-align:center">Crear cuenta</h1>
 
-      <form id="regForm" class="stack">
+      <form id="regForm" class="stack" autocomplete="on">
         <label>
           Nombre y apellido
           <input type="text" id="name" required placeholder="Juan Pérez" />
         </label>
+
         <label>
           Correo
           <input type="email" id="email" required placeholder="tucorreo@dominio.com" />
         </label>
+
         <label>
           Contraseña
           <input type="password" id="password" required minlength="6" placeholder="Mínimo 6 caracteres" />
         </label>
+
+        <!-- NUEVO: selección de plan -->
+        <fieldset class="plan-fieldset">
+          <legend>Elige tu plan</legend>
+
+          <label class="plan-option">
+            <input type="radio" name="plan" value="basico" required />
+            <span><strong>Básico</strong> — S/ 25/mes · <small>Hasta 20 h · vigilancia</small></span>
+          </label>
+
+          <label class="plan-option">
+            <input type="radio" name="plan" value="estandar" />
+            <span><strong>Estándar</strong> — S/ 35/mes · <small>Uso ilimitado (1 sede) + carga solar</small></span>
+          </label>
+
+          <label class="plan-option">
+            <input type="radio" name="plan" value="premium" />
+            <span><strong>Premium</strong> — S/ 45/mes · <small>Todas las sedes + soporte 24 h</small></span>
+          </label>
+
+          <p class="hint">Podrás cambiar de plan después.</p>
+        </fieldset>
+
         <button class="btn btn--primary" type="submit">Registrarme</button>
+        <div id="msg" class="hint" aria-live="polite"></div>
       </form>
 
       <p class="muted" style="text-align:center;margin-top:12px">
@@ -44,24 +76,50 @@
   <!-- App state (auth demo) -->
   <script src="./app.js"></script>
   <!-- Fallback por si app.js no carga -->
-  <script>window.EBECO = window.EBECO || { isAuthed: () => false };</script>
+  <script>window.EBECO = window.EBECO || { isAuthed: () => false, registerUser: () => { throw new Error("EBECO no cargó"); } };</script>
 
   <script>
-    // Si ya está autenticado, entra directo
-    if (EBECO.isAuthed()) location.href = "seleccionar-accion.html";
+    // Redirige si ya está autenticado
+    if (EBECO.isAuthed && EBECO.isAuthed()) location.href = "seleccionar-accion.html";
 
-    document.getElementById("regForm").addEventListener("submit", (e) => {
+    const form = document.getElementById("regForm");
+    const msg  = document.getElementById("msg");
+
+    // Si llega desde precio.html con ?plan=xxx, marcar por defecto
+    (function presetPlanFromURL() {
+      const qp = new URLSearchParams(location.search);
+      const plan = qp.get("plan");
+      if (plan) {
+        const radio = document.querySelector(`input[name="plan"][value="${plan}"]`);
+        if (radio) radio.checked = true;
+      }
+    })();
+
+    function setMsg(t){ msg.textContent = t; }
+
+    form.addEventListener("submit", (e) => {
       e.preventDefault();
       const body = {
         name: document.getElementById("name").value.trim(),
         email: document.getElementById("email").value.trim(),
-        password: document.getElementById("password").value
+        password: document.getElementById("password").value,
+        plan: (new FormData(form)).get("plan")  // basico|estandar|premium
       };
+
       try {
-        EBECO.registerUser(body); // inicia sesión automáticamente
-        location.href = "seleccionar-accion.html";
+        // Crea usuario y deja la sesión iniciada
+        EBECO.registerUser(body);
+
+        // En demo la suscripción se activa al pagar. Vamos al método de pago:
+        setMsg("Cuenta creada. Te llevamos al pago para activar tu plan…");
+        location.href = "metodo-pago.html?from=signup";
       } catch (err) {
-        alert(err.message || "No se pudo registrar.");
+        if (err?.message === "EMAIL_TAKEN") {
+          setMsg("Ese correo ya está registrado. Inicia sesión.");
+        } else {
+          setMsg("No se pudo registrar. Intenta nuevamente.");
+          console.error(err);
+        }
       }
     });
   </script>
