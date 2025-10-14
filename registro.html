@@ -41,28 +41,47 @@
     </section>
   </main>
 
-  <!-- App state (auth demo) -->
-  <script src="./app.js"></script>
-  <!-- Fallback por si app.js no carga -->
-  <script>window.EBECO = window.EBECO || { isAuthed: () => false };</script>
-
   <script>
-    // Si ya está autenticado, entra directo
-    if (EBECO.isAuthed()) location.href = "seleccionar-accion.html";
+    // --- Funciones de autenticación ---
+    const EBECO = {
+      registerUser({ name, email, password }) {
+        const user = { name, email, password };
+        localStorage.setItem("user", JSON.stringify(user));
+        localStorage.setItem("isAuthed", "true");
+      },
+      isAuthed() {
+        return localStorage.getItem("isAuthed") === "true";
+      },
+      getUser() {
+        const data = localStorage.getItem("user");
+        return data ? JSON.parse(data) : null;
+      }
+    };
 
+    // Si ya está autenticado, entra directo
+    if (EBECO.isAuthed()) {
+      location.href = "seleccionar-accion.html";
+    }
+
+    // Manejo del formulario de registro
     document.getElementById("regForm").addEventListener("submit", (e) => {
       e.preventDefault();
-      const body = {
-        name: document.getElementById("name").value.trim(),
-        email: document.getElementById("email").value.trim(),
-        password: document.getElementById("password").value
-      };
-      try {
-        EBECO.registerUser(body); // inicia sesión automáticamente
-        location.href = "seleccionar-accion.html";
-      } catch (err) {
-        alert(err.message || "No se pudo registrar.");
+
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+
+      if (!name || !email || !password) {
+        alert("Por favor completa todos los campos.");
+        return;
       }
+
+      // Guardar en localStorage
+      EBECO.registerUser({ name, email, password });
+
+      // Redirigir después del registro
+      alert("Registro exitoso. Bienvenido, " + name + "!");
+      location.href = "seleccionar-accion.html";
     });
   </script>
 </body>
