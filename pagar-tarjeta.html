@@ -131,6 +131,41 @@
       </section>
     </main>
 
+    <!-- Utilitario de historial (puedes moverlo a history.js si quieres) -->
+    <script>
+      window.EBECO = window.EBECO || {};
+      (function () {
+        const KEY = 'ebeco-history';
+        function load() {
+          try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch { return []; }
+        }
+        function save(list) { localStorage.setItem(KEY, JSON.stringify(list)); }
+        function add({ type, place, at = new Date().toISOString(), amount = null }) {
+          const list = load();
+          list.unshift({
+            id: crypto?.randomUUID ? crypto.randomUUID() : (Date.now() + '-' + Math.random()),
+            type, // 'estacionar' | 'liberar'
+            place: place || 'Sede desconocida',
+            at,    // ISO string
+            amount // número en soles o null
+          });
+          save(list.slice(0, 200)); // guarda máx. 200
+        }
+        function get() { return load(); }
+        function clear() { save([]); }
+        EBECO.History = { add, get, clear };
+      })();
+
+      // Helpers comunes
+      function getPlaceContext() {
+        const params = new URLSearchParams(location.search);
+        if (params.get('place')) return params.get('place');
+        const cached = localStorage.getItem('ebeco-place');
+        if (cached) return cached;
+        return 'Módulo A — UCSM'; // fallback
+      }
+    </script>
+
     <script>
       // ==========================
       //   Web Serial robusto
@@ -141,6 +176,7 @@
         textDecoder = null;
       let openPromise = null; // 🔒 evita open() concurrentes
       let navTimer = null; // fallback de navegación
+      let loggedRelease = false; // evita duplicados
 
       const statusEl = document.getElementById("serialStatus");
       const btnConnect = document.getElementById("btnConnect");
@@ -151,6 +187,14 @@
         statusEl.textContent = t;
         statusEl.style.color =
           tone === "ok" ? "#16a34a" : tone === "err" ? "#b91c1c" : "#64748b";
+      }
+
+      function getAmountNumber() {
+        // Lee del input readonly "total-amount" (ej. "S/. 3.00")
+        const raw = document.getElementById('total-amount')?.value || '0';
+        // Deja solo dígitos, coma o punto; cambia coma por punto y parsea
+        const num = parseFloat(raw.replace(/[^\d.,-]/g, '').replace(',', '.'));
+        return isNaN(num) ? 0 : num;
       }
 
       // Lector único: detecta OPEN/CLOSE del Arduino
@@ -171,6 +215,22 @@
 
             if (/OPEN/i.test(line)) {
               setStatus("Candado abierto (verde).", "ok");
+
+              // >>>>>>>>>>> AÑADIR: registrar LIBERAR con precio <<<<<<<<<<
+              if (!loggedRelease) {
+                try {
+                  window.EBECO?.History?.add({
+                    type: 'liberar',
+                    place: getPlaceContext(),
+                    amount: getAmountNumber()
+                  });
+                  loggedRelease = true;
+                } catch (e) {
+                  console.warn('No se pudo registrar el historial (liberar):', e);
+                }
+              }
+              // >>>>>>>>>>> FIN AÑADIR <<<<<<<<<<
+
               if (navTimer) {
                 clearTimeout(navTimer);
                 navTimer = null;
@@ -336,6 +396,16 @@
       // ==========================
       form.addEventListener("submit", async (e) => {
         e.preventDefault();
+
+        // ------------ INICIO DE PRUEBA SIN ARDUINO ------------ //
+        window.EBECO?.History?.add({
+          type: "liberar",
+          place: getPlaceContext(),
+          amount: 3.00
+        });
+        window.location.href = "bicicleta-desbloqueada.html";
+        return;
+        // ------------ FIN DE PRUEBA SIN ARDUINO ------------ //
 
         // Evita doble clic mientras conecta/manda
         btnSubmit.disabled = true;

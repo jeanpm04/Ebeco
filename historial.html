@@ -24,35 +24,81 @@
       <p class="u-muted">Consulta tus estacionamientos, liberaciones y pagos anteriores.</p>
 
       <!-- Lista de historial -->
-      <div class="list">
-        <!-- Ejemplo de registro -->
-        <div class="item">
-          <div>
-            <div class="u-bold">Estacionar bicicleta</div>
-            <small class="u-muted">Módulo A — UCSM | 08/10/2025 09:30</small>
-          </div>
-          <div class="u-muted">S/. 3.00</div>
-        </div>
+      <div id="historyList" class="list" aria-live="polite"></div>
 
-        <div class="item">
-          <div>
-            <div class="u-bold">Liberar bicicleta</div>
-            <small class="u-muted">Módulo A — UCSM | 08/10/2025 11:00</small>
-          </div>
-          <div class="u-muted">S/. 6.00</div>
-        </div>
-
-        <div class="item">
-          <div>
-            <div class="u-bold">Estacionar bicicleta</div>
-            <small class="u-muted">Módulo B — UCSM | 07/10/2025 14:15</small>
-          </div>
-          <div class="u-muted">S/. 3.00</div>
-        </div>
-
-        <!-- Más registros se agregarían dinámicamente -->
-      </div>
     </section>
   </main>
+  <!-- Utilitario de historial (igualito al de precio.html) -->
+  <script>
+    window.EBECO = window.EBECO || {};
+    (function () {
+      const KEY = 'ebeco-history';
+      function load() {
+        try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch { return []; }
+      }
+      function save(list) { localStorage.setItem(KEY, JSON.stringify(list)); }
+      function add({ type, place, at = new Date().toISOString(), amount = null }) {
+        const list = load();
+        list.unshift({
+          id: crypto?.randomUUID ? crypto.randomUUID() : (Date.now() + '-' + Math.random()),
+          type, // 'estacionar' | 'liberar'
+          place: place || 'Sede desconocida',
+          at,
+          amount
+        });
+        save(list.slice(0, 200));
+      }
+      function get() { return load(); }
+      function clear() { save([]); }
+      EBECO.History = { add, get, clear };
+    })();
+
+    // Helper del lugar (opcional)
+    function getPlaceContext() {
+      const params = new URLSearchParams(location.search);
+      if (params.get('place')) return params.get('place');
+      const cached = localStorage.getItem('ebeco-place');
+      if (cached) return cached;
+      return 'Módulo A — UCSM';
+    }
+  </script>
+  <script>
+    const fmt = new Intl.DateTimeFormat('es-PE', { dateStyle: 'short', timeStyle: 'short' });
+    function money(n) { return 'S/. ' + Number(n).toFixed(2); }
+    function label(type) { return type === 'liberar' ? 'Liberar bicicleta' : 'Estacionar bicicleta'; }
+
+    function renderHistory() {
+      const cont = document.getElementById('historyList');
+      const list = (window.EBECO?.History?.get?.() || []);
+
+      if (!list.length) {
+        cont.innerHTML = `
+          <div class="item">
+            <div>
+              <div class="u-bold">Sin registros aún</div>
+              <small class="u-muted">Aquí verás tus estacionamientos y liberaciones.</small>
+            </div>
+          </div>`;
+        return;
+      }
+
+      cont.innerHTML = list.map(it => {
+        const when = fmt.format(new Date(it.at));
+        const right = it.type === 'liberar' && it.amount != null
+          ? `<div class="u-muted">${money(it.amount)}</div>`
+          : `<div class="u-muted">—</div>`;
+        return `
+          <div class="item">
+            <div>
+              <div class="u-bold">${label(it.type)}</div>
+              <small class="u-muted">${it.place} | ${when}</small>
+            </div>
+            ${right}
+          </div>`;
+      }).join('');
+    }
+
+    document.addEventListener('DOMContentLoaded', renderHistory);
+  </script>
 </body>
 </html>
