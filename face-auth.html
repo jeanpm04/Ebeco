@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>EBECO — Reconocimiento facial (POC local)</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .screen { max-width: 980px; margin: 0 auto; padding: 16px; }
+    .grid { display:flex; gap:18px; flex-wrap:wrap; align-items:flex-start; }
+    video, canvas { width:480px; height:360px; background:#111; border-radius:12px; }
+    .controls { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+    .log { white-space: pre-wrap; background:#f6f6f6; padding:10px; border-radius:10px; min-height:70px; margin-top:10px; }
+    .topbar { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+    .btn { padding:10px 14px; border:1px solid #ccc; border-radius:10px; cursor:pointer; background:#fff; }
+  </style>
+</head>
+<body class="app">
+  <main class="screen">
+    <header class="topbar">
+      <button class="btn" onclick="history.back()" aria-label="Volver">← Volver</button>
+      <h1 style="margin:0">EBECO — Reconocimiento facial</h1>
+      <img src="assets/logo-ebeco.png" alt="EBECO" style="margin-left:auto;width:56px;height:56px;border-radius:50%" />
+    </header>
+
+    <p class="u-muted">
+      POC local: la plantilla facial se guarda <strong>solo en tu navegador</strong> (IndexedDB). No se sube a servidor.
+    </p>
+
+    <section class="grid">
+      <div>
+        <video id="cam" autoplay muted playsinline></video>
+        <div class="controls">
+          <button id="btn-start" class="btn">Abrir cámara</button>
+          <button id="btn-capture" class="btn">Registrar rostro</button>
+          <button id="btn-login" class="btn">Verificar rostro</button>
+          <button id="btn-stop" class="btn">Cerrar cámara</button>
+        </div>
+      </div>
+
+      <div>
+        <canvas id="snap" width="480" height="360"></canvas>
+        <div class="log" id="log">Estado: esperando acciones…</div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Usa TFJS 1.7.4 (compatible con face-api 0.22.x) -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.7.4/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+  <script src="face-auth.js"></script>
+</body>
+</html>

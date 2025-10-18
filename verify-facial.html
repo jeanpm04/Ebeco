@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>EBECO — Verificación facial</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .card { max-width: 420px; margin: 0 auto; }
+    .status-row { display:flex; align-items:center; gap:10px; }
+    .dot { width:10px; height:10px; border-radius:50%; background:#2ecc71; }
+    .progress { height:8px; background:#e9ecef; border-radius:999px; overflow:hidden; }
+    .progress > span { display:block; height:100%; width:0%; background:#2e7d32; transition:width .25s ease; }
+    .muted { color:#6c757d; }
+    .stack { display:grid; gap:14px; }
+    .badge { background:#eef7ee; border:1px solid #cce5cc; padding:6px 10px; border-radius:999px; font-size:.9rem; }
+    .kv { display:grid; gap:8px; }
+    .kv .row { display:flex; justify-content:space-between; border:1px solid #e7e7e7; border-radius:12px; padding:10px 12px; }
+    /* cámara dentro del card */
+    .cam-wrap { border-radius:14px; overflow:hidden; background:#000; }
+    video { width:100%; display:block; aspect-ratio: 4 / 3; }
+    .hidden { display:none; }
+  </style>
+</head>
+<body class="app">
+  <main class="screen">
+    <header class="topbar" role="banner">
+      <button class="btn btn--ghost" onclick="history.back()" aria-label="Volver">←</button>
+      <h1 class="topbar__title" style="flex:1">EBECO</h1>
+      <img src="assets/logo-ebeco.png" class="brand__logo" alt="EBECO"
+           style="width:56px;height:56px;border-radius:50%" />
+    </header>
+
+    <section class="card stack">
+      <h2>Vinculando a la bicicleta…</h2>
+
+      <!-- 👇 Vista previa de la cámara dentro de la tarjeta -->
+      <div class="cam-wrap">
+        <video id="cam" autoplay muted playsinline></video>
+      </div>
+
+      <div class="status-row">
+        <span class="dot" id="led"></span>
+        <span class="badge" id="status">Procesando datos biométricos</span>
+      </div>
+      <p class="muted">Mantén la posición frente al módulo de lectura</p>
+
+      <div class="kv">
+        <div class="row"><span>Slot asignado</span><strong>#01</strong></div>
+        <div class="row"><span>Estación</span><strong>Módulo A — UCSM</strong></div>
+        <div class="row"><span>Tiempo estimado</span><strong>~ <span id="eta">5</span> s</strong></div>
+      </div>
+
+      <div class="progress">
+        <span id="bar"></span>
+      </div>
+
+      <div class="stack">
+        <button class="btn btn--danger" id="btn-cancel">Cancelar</button>
+        <button class="btn hidden" id="btn-retry">Reintentar</button>
+      </div>
+
+      <pre class="muted" id="log" style="white-space:pre-wrap"></pre>
+    </section>
+  </main>
+
+  <!-- TFJS compatible con face-api -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.7.4/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+  <script src="verify-facial.js"></script>
+</body>
+</html>
