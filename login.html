@@ -1,62 +1,80 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>EBECO — Iniciar sesión</title>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>EBECO — Iniciar sesión</title>
 
-  <!-- Fuentes + estilos globales -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body class="app">
-  <main class="screen screen--center">
-    <section class="card" style="max-width:420px">
-      <div class="brand" style="justify-content:center">
-        <img src="assets/logo-ebeco.png" alt="EBECO" class="brand__logo" />
-      </div>
-      <h1 class="brand__title" style="text-align:center">Iniciar sesión</h1>
+    <!-- Fuentes + estilos globales -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="app">
+    <main class="screen screen--center">
+      <section class="card" style="max-width: 420px">
+        <div class="brand" style="justify-content: center">
+          <img src="assets/logo-ebeco.png" alt="EBECO" class="brand__logo" />
+        </div>
+        <h1 class="brand__title" style="text-align: center">Iniciar sesión</h1>
 
-      <form id="loginForm" class="stack">
-        <label>
-          Correo
-          <input type="email" id="email" required placeholder="tucorreo@gmail.com" />
-        </label>
-        <label>
-          Contraseña
-          <input type="password" id="password" required placeholder="••••••••" />
-        </label>
-        <button class="btn btn--primary" type="submit">Entrar</button>
-      </form>
+        <form id="loginForm" class="stack">
+          <label>
+            Correo
+            <input
+              type="email"
+              id="email"
+              required
+              placeholder="tucorreo@gmail.com"
+            />
+          </label>
+          <label>
+            Contraseña
+            <input
+              type="password"
+              id="password"
+              required
+              placeholder="••••••••"
+            />
+          </label>
+          <button class="btn btn--primary" type="submit">Entrar</button>
+        </form>
 
-      <p class="muted" style="text-align:center;margin-top:12px">
-        ¿No tienes cuenta? <a href="registro.html">Crear cuenta</a>
-      </p>
-    </section>
-  </main>
+        <p class="muted" style="text-align: center; margin-top: 12px">
+          ¿No tienes cuenta? <a href="registro.html">Crear cuenta</a>
+        </p>
+      </section>
+    </main>
 
-  <!-- App state (auth demo) -->
-  <script src="./app.js"></script>
-  <!-- Fallback por si app.js no carga -->
-  <script>window.EBECO = window.EBECO || { isAuthed: () => false };</script>
+    <!-- App state (auth demo) -->
+    <script src="./app.js"></script>
+    <!-- Fallback por si app.js no carga -->
+    <script>
+      window.EBECO = window.EBECO || { isAuthed: () => false };
+    </script>
 
-  <script>
-    // Si ya está autenticado, entra directo
-    if (EBECO.isAuthed()) location.href = "seleccionar-accion.html";
+    <script>
+      // Si ya está autenticado, entra directo
+      if (EBECO.isAuthed()) location.href = "seleccionar-accion.html";
 
-    document.getElementById("loginForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const email = document.getElementById("email").value.trim();
-      const password = document.getElementById("password").value;
-      try {
-        EBECO.loginUser(email, password);
-        location.href = "seleccionar-accion.html";
-      } catch (err) {
-        alert(err.message || "No se pudo iniciar sesión.");
-      }
-    });
-  </script>
-</body>
+      document.getElementById("loginForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value;
+        try {
+          EBECO.loginUser(email, password);
+          location.href = "seleccionar-accion.html";
+        } catch (err) {
+          alert(err.message || "No se pudo iniciar sesión.");
+        }
+      });
+    </script>
+  </body>
 </html>

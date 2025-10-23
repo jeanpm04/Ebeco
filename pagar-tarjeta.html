@@ -2,155 +2,198 @@
 <html lang="es">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
     <title>EBECO — Pagar con tarjeta</title>
     <link rel="stylesheet" href="styles.css" />
-    <style>
-      .hint{opacity:.85;font-size:.9rem}
-      .fieldset{border:1px solid #e6e6e6;border-radius:10px;padding:.75rem 1rem;margin:.75rem 0}
-      .fieldset legend{font-weight:600}
-      .row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
-    </style>
   </head>
   <body class="app">
     <main class="screen">
       <!-- Topbar -->
       <header class="topbar" role="banner">
-        <button class="btn btn--ghost" onclick="history.back()" aria-label="Volver">←</button>
+        <button
+          class="btn btn--ghost"
+          onclick="history.back()"
+          aria-label="Volver"
+        >
+          ←
+        </button>
         <h1 class="topbar__title" style="flex: 1">EBECO</h1>
-        <img src="assets/logo-ebeco.png" alt="Logo EBECO" class="brand__logo"
-             style="width:80px;height:80px;object-fit:contain;border-radius:50%;background:transparent;box-shadow:none;" />
+        <img
+          src="assets/logo-ebeco.png"
+          alt="Logo EBECO"
+          class="brand__logo"
+          style="
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            border-radius: 50%;
+            background: transparent;
+            box-shadow: none;
+          "
+        />
       </header>
 
       <!-- Card principal con formulario -->
-      <section class="card u-grid stack-top" aria-labelledby="card-payment-title">
+      <section
+        class="card u-grid stack-top"
+        aria-labelledby="card-payment-title"
+      >
         <h2 id="card-payment-title">Pagar con tarjeta</h2>
 
         <form id="payment-form" class="u-grid" novalidate>
-          <!-- Modo de pago -->
-          <fieldset class="fieldset">
-            <legend>Tipo de pago</legend>
-            <label style="display:flex;gap:.5rem;align-items:center;margin:.25rem 0">
-              <input type="radio" name="payMode" value="subscription" checked />
-              <span>Suscripción mensual del plan</span>
-            </label>
-            <div id="planInfo" class="hint"></div>
-
-            <label style="display:flex;gap:.5rem;align-items:center;margin:.5rem 0 .25rem">
-              <input type="radio" name="payMode" value="single" />
-              <span>Uso único (S/ 3 por hora)</span>
-            </label>
-            <div id="singleWrapper" class="row" style="display:none">
-              <label>Horas de uso
-                <input id="hours" type="number" min="1" step="1" value="1" />
-              </label>
-              <div class="hint" style="align-self:end">Se cobra solo por esta sesión.</div>
-            </div>
-          </fieldset>
-
           <div class="field">
             <label for="cardholder" class="label">Titular de la tarjeta</label>
-            <input type="text" id="cardholder" name="cardholder" class="input" placeholder="Nombre completo" />
+            <input
+              type="text"
+              id="cardholder"
+              name="cardholder"
+              class="input"
+              placeholder="Nombre completo"
+            />
           </div>
 
           <div class="field">
             <label for="card-number" class="label">Número de tarjeta</label>
-            <input type="text" id="card-number" name="card-number" class="input" placeholder="1234 5678 9012 3456" />
+            <input
+              type="text"
+              id="card-number"
+              name="card-number"
+              class="input"
+              placeholder="1234 5678 9012 3456"
+            />
           </div>
 
-          <div class="row">
-            <div class="field">
-              <label for="expiration" class="label">Fecha de vencimiento</label>
-              <input type="month" id="expiration" name="expiration" class="input" />
-            </div>
+          <div class="field">
+            <label for="expiration" class="label">Fecha de vencimiento</label>
+            <input
+              type="month"
+              id="expiration"
+              name="expiration"
+              class="input"
+            />
+          </div>
 
-            <div class="field">
-              <label for="cvv" class="label">CVV</label>
-              <input type="text" id="cvv" name="cvv" class="input" placeholder="123" />
-            </div>
+          <div class="field">
+            <label for="cvv" class="label">CVV</label>
+            <input
+              type="text"
+              id="cvv"
+              name="cvv"
+              class="input"
+              placeholder="123"
+            />
           </div>
 
           <div class="field">
             <label for="total-amount" class="label">Monto a pagar</label>
-            <input type="text" id="total-amount" name="total-amount" class="input" value="S/. 0.00" readonly />
+            <input
+              type="text"
+              id="total-amount"
+              name="total-amount"
+              class="input"
+              value="S/. 3.00"
+              readonly
+            />
           </div>
 
-          <div class="actions" style="display:flex;flex-direction:column;gap:.75rem">
-            <button id="btnSubmit" type="submit" class="btn btn--primary btn--lg">Confirmar pago</button>
-            <button id="btnConnect" type="button" class="btn btn--ghost" style="display:none">Conectar dispositivo</button>
+          <div
+            class="actions"
+            style="display: flex; flex-direction: column; gap: 0.75rem"
+          >
+            <button
+              id="btnSubmit"
+              type="submit"
+              class="btn btn--primary btn--lg"
+            >
+              Confirmar pago
+            </button>
+            <button
+              id="btnConnect"
+              type="button"
+              class="btn btn--ghost"
+              style="display: none"
+            >
+              Conectar dispositivo
+            </button>
           </div>
 
-          <div id="serialStatus" class="u-muted" style="margin-top:1rem;text-align:center">Preparando sistema…</div>
+          <div
+            id="serialStatus"
+            class="u-muted"
+            style="margin-top: 1rem; text-align: center"
+          >
+            Preparando sistema…
+          </div>
         </form>
       </section>
     </main>
 
-    <script src="app.js"></script>
+    <!-- Utilitario de historial (puedes moverlo a history.js si quieres) -->
+    <script>
+      window.EBECO = window.EBECO || {};
+      (function () {
+        const KEY = "ebeco-history";
+        function load() {
+          try {
+            return JSON.parse(localStorage.getItem(KEY) || "[]");
+          } catch {
+            return [];
+          }
+        }
+        function save(list) {
+          localStorage.setItem(KEY, JSON.stringify(list));
+        }
+        function add({
+          type,
+          place,
+          at = new Date().toISOString(),
+          amount = null,
+        }) {
+          const list = load();
+          list.unshift({
+            id: crypto?.randomUUID
+              ? crypto.randomUUID()
+              : Date.now() + "-" + Math.random(),
+            type, // 'estacionar' | 'liberar'
+            place: place || "Sede desconocida",
+            at, // ISO string
+            amount, // número en soles o null
+          });
+          save(list.slice(0, 200)); // guarda máx. 200
+        }
+        function get() {
+          return load();
+        }
+        function clear() {
+          save([]);
+        }
+        EBECO.History = { add, get, clear };
+      })();
+
+      // Helpers comunes
+      function getPlaceContext() {
+        const params = new URLSearchParams(location.search);
+        if (params.get("place")) return params.get("place");
+        const cached = localStorage.getItem("ebeco-place");
+        if (cached) return cached;
+        return "Módulo A — UCSM"; // fallback
+      }
+    </script>
+
     <script>
       // ==========================
-      //   Cálculo de monto
+      //   Web Serial robusto
       // ==========================
-      const RATE_PER_HOUR = 3; // S/ 3 por hora
-      const totalInput = document.getElementById("total-amount");
-      const planInfo = document.getElementById("planInfo");
-      const hoursEl = document.getElementById("hours");
-      const singleWrapper = document.getElementById("singleWrapper");
-      const payModeEls = Array.from(document.querySelectorAll('input[name="payMode"]'));
-
-      // Lee plan actual del usuario o desde la URL (?plan=basico|estandar|premium)
-      const PLANS = (window.EBECO?.getPlans && EBECO.getPlans()) || {
-        basico:{name:"Básico",price:25}, estandar:{name:"Estándar",price:35}, premium:{name:"Premium",price:45}
-      };
-      const qp = new URLSearchParams(location.search);
-      const user = (window.EBECO?.getCurrentUser && EBECO.getCurrentUser()) || null;
-      const planKeyFromURL = qp.get("plan");
-      const planKey = (planKeyFromURL || user?.plan || "basico");
-      const plan = PLANS[planKey];
-
-      function format(n){ return "S/. " + n.toFixed(2); }
-
-      function hydratePlanInfo(){
-        if (plan) {
-          planInfo.textContent = `Plan actual: ${plan.name} — ${format(plan.price)}/mes`;
-        } else {
-          planInfo.textContent = "Elige un plan en la pantalla anterior.";
-        }
-      }
-
-      function currentMode(){ return payModeEls.find(r=>r.checked)?.value || "subscription"; }
-
-      function computeAmount(){
-        let amount = 0;
-        if (currentMode() === "subscription") {
-          amount = plan ? plan.price : 0;
-        } else {
-          const h = Math.max(1, parseInt(hoursEl.value || "1", 10));
-          amount = RATE_PER_HOUR * h;
-        }
-        totalInput.value = format(amount);
-        totalInput.dataset.amount = String(amount);
-        return amount;
-      }
-
-      payModeEls.forEach(radio=>{
-        radio.addEventListener('change', ()=>{
-          const single = currentMode()==="single";
-          singleWrapper.style.display = single ? "grid" : "none";
-          computeAmount();
-        });
-      });
-
-      hoursEl?.addEventListener('input', computeAmount);
-
-      hydratePlanInfo();
-      computeAmount();
-
-      // ==========================
-      //   Web Serial (tu código, intacto)
-      // ==========================
-      let port = null, writer = null, reader = null, textDecoder = null;
-      let openPromise = null;
-      let navTimer = null;
+      let port = null,
+        writer = null,
+        reader = null,
+        textDecoder = null;
+      let openPromise = null; // 🔒 evita open() concurrentes
+      let navTimer = null; // fallback de navegación
+      let loggedRelease = false; // evita duplicados
 
       const statusEl = document.getElementById("serialStatus");
       const btnConnect = document.getElementById("btnConnect");
@@ -159,9 +202,19 @@
 
       function setStatus(t, tone = "muted") {
         statusEl.textContent = t;
-        statusEl.style.color = tone === "ok" ? "#16a34a" : tone === "err" ? "#b91c1c" : "#64748b";
+        statusEl.style.color =
+          tone === "ok" ? "#16a34a" : tone === "err" ? "#b91c1c" : "#64748b";
       }
 
+      function getAmountNumber() {
+        // Lee del input readonly "total-amount" (ej. "S/. 3.00")
+        const raw = document.getElementById("total-amount")?.value || "0";
+        // Deja solo dígitos, coma o punto; cambia coma por punto y parsea
+        const num = parseFloat(raw.replace(/[^\d.,-]/g, "").replace(",", "."));
+        return isNaN(num) ? 0 : num;
+      }
+
+      // Lector único: detecta OPEN/CLOSE del Arduino
       async function readLoop() {
         let buf = "";
         while (true) {
@@ -179,10 +232,36 @@
 
             if (/OPEN/i.test(line)) {
               setStatus("Candado abierto (verde).", "ok");
-              if (navTimer) { clearTimeout(navTimer); navTimer = null; }
-              setTimeout(() => { window.location.href = "bicicleta-desbloqueada.html"; }, 300);
+
+              // >>>>>>>>>>> AÑADIR: registrar LIBERAR con precio <<<<<<<<<<
+              if (!loggedRelease) {
+                try {
+                  window.EBECO?.History?.add({
+                    type: "liberar",
+                    place: getPlaceContext(),
+                    amount: getAmountNumber(),
+                  });
+                  loggedRelease = true;
+                } catch (e) {
+                  console.warn(
+                    "No se pudo registrar el historial (liberar):",
+                    e
+                  );
+                }
+              }
+              // >>>>>>>>>>> FIN AÑADIR <<<<<<<<<<
+
+              if (navTimer) {
+                clearTimeout(navTimer);
+                navTimer = null;
+              }
+              setTimeout(() => {
+                window.location.href = "bicicleta-desbloqueada.html";
+              }, 300);
             }
-            if (/CLOSE/i.test(line)) setStatus("Candado cerrado (rojo).");
+            if (/CLOSE/i.test(line)) {
+              setStatus("Candado cerrado (rojo).");
+            }
           }
         }
       }
@@ -194,17 +273,37 @@
         console.log("[EBECO] >", s);
       }
 
+      // Abre/reusa un puerto concedido; con forceDialog puede forzar chooser
       async function ensureConnected({ forceDialog = false } = {}) {
-        if (!("serial" in navigator)) { setStatus("Web Serial no disponible (usa Chrome/Edge).", "err"); return false; }
-        if (openPromise) { try { await openPromise; } catch {} return !!(port && port.readable && port.writable); }
+        if (!("serial" in navigator)) {
+          setStatus("Web Serial no disponible (usa Chrome/Edge).", "err");
+          return false;
+        }
 
+        // Si ya hay una apertura en curso, espera esa misma promesa
+        if (openPromise) {
+          try {
+            await openPromise;
+          } catch {}
+          return !!(port && port.readable && port.writable);
+        }
+
+        // Promesa única de apertura (candado)
         openPromise = (async () => {
           try {
+            // 1) Selección/permiso
             if (!port) {
               const ports = await navigator.serial.getPorts();
-              if (ports.length) port = ports[0];
-              else if (forceDialog) {
-                const filters = [{usbVendorId:0x2341},{usbVendorId:0x2a03},{usbVendorId:0x1a86},{usbVendorId:0x10c4}];
+              if (ports.length) {
+                port = ports[0];
+              } else if (forceDialog) {
+                // Selector con filtros para Arduino/CH340/CP210x
+                const filters = [
+                  { usbVendorId: 0x2341 }, // Arduino LLC
+                  { usbVendorId: 0x2a03 }, // Arduino.org
+                  { usbVendorId: 0x1a86 }, // CH340
+                  { usbVendorId: 0x10c4 }, // CP210x
+                ];
                 port = await navigator.serial.requestPort({ filters });
               } else {
                 setStatus("Sin permiso previo. Pulsa “Conectar dispositivo”.");
@@ -212,91 +311,159 @@
                 return false;
               }
             }
+
+            // 2) Abrir si no está abierto aún
             const needsOpen = !(port.readable && port.writable);
             if (needsOpen) {
               await port.open({ baudRate: 115200 });
-              await new Promise(r=>setTimeout(r,1200));
+              await new Promise((r) => setTimeout(r, 1200)); // warmup del UNO
+
               writer = port.writable.getWriter();
               textDecoder = new TextDecoder();
               reader = port.readable.getReader();
-              readLoop().catch(()=>{});
+              readLoop().catch(() => {});
             }
+
             setStatus("✅ Sistema conectado.", "ok");
             btnConnect.style.display = "none";
-            window.addEventListener("beforeunload", async () => {
-              try { await reader?.cancel?.(); } catch {}
-              try { reader?.releaseLock?.(); } catch {}
-              try { writer?.releaseLock?.(); } catch {}
-              try { await port?.close?.(); } catch {}
-            }, { once:true });
+
+            // Cierre ordenado al salir
+            window.addEventListener(
+              "beforeunload",
+              async () => {
+                try {
+                  await reader?.cancel?.();
+                } catch {}
+                try {
+                  reader?.releaseLock?.();
+                } catch {}
+                try {
+                  writer?.releaseLock?.();
+                } catch {}
+                try {
+                  await port?.close?.();
+                } catch {}
+              },
+              { once: true }
+            );
+
             return true;
           } catch (e) {
             console.error("[EBECO] ensureConnected open error:", e);
-            setStatus("No se pudo abrir el puerto. ¿IDE u otra pestaña lo usa?", "err");
+            setStatus(
+              "No se pudo abrir el puerto. ¿IDE u otra pestaña lo usa?",
+              "err"
+            );
+            // Forzar re-selección en el próximo intento
             port = null;
             return false;
-          } finally { setTimeout(()=>{ openPromise = null; },0); }
+          } finally {
+            // libera el candado (defer para evitar carrera inmediata)
+            setTimeout(() => {
+              openPromise = null;
+            }, 0);
+          }
         })();
 
         return await openPromise;
       }
 
-      document.addEventListener("DOMContentLoaded", () => { ensureConnected(); });
+      // Conecta automáticamente si ya había permiso (no abre diálogo)
+      document.addEventListener("DOMContentLoaded", () => {
+        ensureConnected(); // intento silencioso
+      });
+
+      // Botón para pedir puerto si no hay permiso previo (con filtros)
       btnConnect.addEventListener("click", async () => {
         btnConnect.disabled = true;
         setStatus("Abriendo selector de puertos…");
         try {
-          const filters=[{usbVendorId:0x2341},{usbVendorId:0x2a03},{usbVendorId:0x1a86},{usbVendorId:0x10c4}];
+          const filters = [
+            { usbVendorId: 0x2341 }, // Arduino LLC
+            { usbVendorId: 0x2a03 }, // Arduino.org
+            { usbVendorId: 0x1a86 }, // CH340
+            { usbVendorId: 0x10c4 }, // CP210x
+          ];
+          // Forzamos chooser y guardamos port elegido
           port = await navigator.serial.requestPort({ filters });
+
           setStatus("Conectando al dispositivo…");
-          const ok = await ensureConnected();
+          const ok = await ensureConnected(); // ya con 'port' definido
           if (ok) {
             const info = port.getInfo?.() || {};
-            setStatus(`✅ Conectado (vendor 0x${(info.usbVendorId||0).toString(16)} product 0x${(info.usbProductId||0).toString(16)})`, "ok");
-            btnConnect.style.display="none";
+            setStatus(
+              `✅ Conectado (vendor 0x${(info.usbVendorId || 0).toString(
+                16
+              )} product 0x${(info.usbProductId || 0).toString(16)})`,
+              "ok"
+            );
+            btnConnect.style.display = "none";
           } else {
-            setStatus("No se pudo conectar. Verifica el IDE.", "err");
-            btnConnect.disabled=false;
+            setStatus(
+              "No se pudo conectar. Verifica que el IDE no tenga abierto el Monitor Serial.",
+              "err"
+            );
+            btnConnect.disabled = false;
           }
-        } catch(e) {
+        } catch (e) {
           setStatus("Selección cancelada. Vuelve a intentar.", "muted");
-          btnConnect.disabled=false;
+          btnConnect.disabled = false;
         }
       });
 
       // ==========================
-      //   Submit: cobra y abre
+      //   Formulario (sin validación real)
       // ==========================
       form.addEventListener("submit", async (e) => {
         e.preventDefault();
+
+        // ------------ INICIO DE PRUEBA SIN ARDUINO ------------ //
+        window.EBECO?.History?.add({
+          type: "liberar",
+          place: getPlaceContext(),
+          amount: 3.0,
+        });
+        window.location.href = "bicicleta-desbloqueada.html";
+        return;
+        // ------------ FIN DE PRUEBA SIN ARDUINO ------------ //
+
+        // Evita doble clic mientras conecta/manda
         btnSubmit.disabled = true;
 
-        // 1) Calcula y "cobra"
-        const amount = computeAmount();
-        const mode = currentMode();
-
-        // Si es suscripción, marcar activa
-        if (mode === "subscription") {
-          try { window.EBECO?.markPaymentOk?.(); } catch {}
-        }
-
-        // 2) Conectar y abrir
+        // Asegura conexión: primero silencioso, luego con diálogo si hace falta
         setStatus("Conectando al dispositivo…");
         let ok = await ensureConnected();
         if (!ok) ok = await ensureConnected({ forceDialog: true });
-        if (!ok) { setStatus("No se pudo conectar. Usa “Conectar dispositivo”.", "err"); btnSubmit.disabled=false; return; }
+        if (!ok) {
+          setStatus("No se pudo conectar. Usa “Conectar dispositivo”.", "err");
+          btnSubmit.disabled = false;
+          return;
+        }
 
-        setStatus(`Procesando pago de ${totalInput.value}…`);
-        await new Promise(r=>setTimeout(r, 600)); // simulación de cobro
-
+        // Enviar comando ABRIR (o)
         setStatus("🔓 Abriendo seguro…");
-        try { await sendLine("o"); }
-        catch { setStatus("No se pudo enviar el comando. Cierra el Monitor Serial del IDE.", "err"); btnSubmit.disabled=false; return; }
+        try {
+          await sendLine("o"); // abrir (LED verde)
+        } catch {
+          setStatus(
+            "No se pudo enviar el comando. Cierra el Monitor Serial del IDE.",
+            "err"
+          );
+          btnSubmit.disabled = false;
+          return;
+        }
 
+        // Fallback: si no llega OPEN en 1.5 s, navegar igual
         if (navTimer) clearTimeout(navTimer);
-        navTimer = setTimeout(()=>{ window.location.href = "bicicleta-desbloqueada.html"; }, 1500);
+        navTimer = setTimeout(() => {
+          console.warn("[EBECO] Fallback: navegar sin ACK OPEN");
+          window.location.href = "bicicleta-desbloqueada.html";
+        }, 1500);
 
-        setTimeout(()=>{ btnSubmit.disabled=false; }, 2000);
+        // Rehabilitar por si no navega (si navega no importa)
+        setTimeout(() => {
+          btnSubmit.disabled = false;
+        }, 2000);
       });
     </script>
   </body>

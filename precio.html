@@ -108,6 +108,58 @@
       </section>
     </main>
 
+    <!-- Utilitario de historial (puedes moverlo a history.js si quieres) -->
+    <script>
+      window.EBECO = window.EBECO || {};
+      (function () {
+        const KEY = "ebeco-history";
+        function load() {
+          try {
+            return JSON.parse(localStorage.getItem(KEY) || "[]");
+          } catch {
+            return [];
+          }
+        }
+        function save(list) {
+          localStorage.setItem(KEY, JSON.stringify(list));
+        }
+        function add({
+          type,
+          place,
+          at = new Date().toISOString(),
+          amount = null,
+        }) {
+          const list = load();
+          list.unshift({
+            id: crypto?.randomUUID
+              ? crypto.randomUUID()
+              : Date.now() + "-" + Math.random(),
+            type, // 'estacionar' | 'liberar'
+            place: place || "Sede desconocida",
+            at, // ISO string
+            amount, // número en soles o null
+          });
+          save(list.slice(0, 200)); // guarda máx. 200
+        }
+        function get() {
+          return load();
+        }
+        function clear() {
+          save([]);
+        }
+        EBECO.History = { add, get, clear };
+      })();
+
+      // Helpers comunes
+      function getPlaceContext() {
+        const params = new URLSearchParams(location.search);
+        if (params.get("place")) return params.get("place");
+        const cached = localStorage.getItem("ebeco-place");
+        if (cached) return cached;
+        return "Módulo A — UCSM"; // fallback
+      }
+    </script>
+
     <script>
       // ====== Reloj ======
       function getCurrentTime() {
@@ -119,6 +171,9 @@
           "current-time"
         ).textContent = `${hh}:${mm}:${ss}`;
       }
+      setInterval(getCurrentTime, 1000);
+      getCurrentTime();
+
       setInterval(getCurrentTime, 1000);
       getCurrentTime();
 
@@ -174,6 +229,14 @@
       btnConfirm.addEventListener("click", async (e) => {
         e.preventDefault();
         try {
+          // ------------ INICIO DE PRUEBA SIN ARDUINO ------------ //
+          window.EBECO?.History?.add({
+            type: "estacionar",
+            place: getPlaceContext(),
+          });
+          window.location.href = nextHref;
+          return;
+          // ------------ FIN DE PRUEBA SIN ARDUINO ------------ //
           const ok = await ensureConnected(!connected); // si no conectado, abrir selector
           if (!ok) return;
 
@@ -281,6 +344,22 @@
             if (/CLOSE/i.test(line)) {
               setNote("Candado cerrado (rojo).");
               setStatus("Candado cerrado ✓", "ok");
+
+              // >>>>>>>>>>> AÑADIR: registrar ESTACIONAR sin precio <<<<<<<<<<
+              try {
+                window.EBECO?.History?.add({
+                  type: "estacionar",
+                  place: getPlaceContext(),
+                  // sin amount
+                });
+              } catch (e) {
+                console.warn(
+                  "No se pudo registrar el historial (estacionar):",
+                  e
+                );
+              }
+              // >>>>>>>>>>> FIN AÑADIR <<<<<<<<<<
+
               if (navTimer) {
                 clearTimeout(navTimer);
                 navTimer = null;

@@ -2,29 +2,92 @@
 <html lang="es">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
     <title>EBECO — Registro</title>
 
     <!-- Fuentes + estilos globales -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="styles.css" />
 
     <style>
-      .plan-fieldset { margin-top: 0.75rem; border: 1px solid #e6e6e6; border-radius: 10px; padding: 0.75rem 1rem; }
-      .plan-fieldset legend { font-weight: 600; padding: 0 0.25rem; }
-      .plan-option { display: flex; gap: 0.5rem; align-items: center; padding: 0.35rem 0; }
-      .hint { font-size: 0.9rem; opacity: 0.85; margin-top: 0.25rem; }
+      .plan-fieldset {
+        margin-top: 0.75rem;
+        border: 1px solid #e6e6e6;
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+      }
+      .plan-fieldset legend {
+        font-weight: 600;
+        padding: 0 0.25rem;
+      }
+      .plan-option {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        padding: 0.35rem 0;
+      }
+      .hint {
+        font-size: 0.9rem;
+        opacity: 0.85;
+        margin-top: 0.25rem;
+      }
 
       /* Modal cámara */
-      .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.45); display: none; place-items: center; z-index: 50; }
-      .modal { width: 520px; max-width: calc(100% - 24px); background: #fff; border-radius: 16px; padding: 14px; box-shadow: 0 20px 60px rgba(0,0,0,.35); display: grid; gap: 10px; }
-      .modal header { display:flex; align-items:center; justify-content:space-between; }
-      .modal video { width: 100%; aspect-ratio: 4 / 3; background: #000; border-radius: 12px; }
-      .row { display:flex; gap:10px; flex-wrap:wrap; }
-      .badge-ok { display:inline-block; padding:6px 10px; border-radius:999px; border:1px solid #cce5cc; background:#eef7ee; color:#2e7d32; font-weight:600; }
-      .btn[disabled] { opacity:.6; cursor:not-allowed; }
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.45);
+        display: none;
+        place-items: center;
+        z-index: 50;
+      }
+      .modal {
+        width: 520px;
+        max-width: calc(100% - 24px);
+        background: #fff;
+        border-radius: 16px;
+        padding: 14px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+        display: grid;
+        gap: 10px;
+      }
+      .modal header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .modal video {
+        width: 100%;
+        aspect-ratio: 4 / 3;
+        background: #000;
+        border-radius: 12px;
+      }
+      .row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .badge-ok {
+        display: inline-block;
+        padding: 6px 10px;
+        border-radius: 999px;
+        border: 1px solid #cce5cc;
+        background: #eef7ee;
+        color: #2e7d32;
+        font-weight: 600;
+      }
+      .btn[disabled] {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
     </style>
   </head>
 
@@ -44,12 +107,23 @@
 
           <label>
             Correo
-            <input type="email" id="email" required placeholder="tucorreo@dominio.com" />
+            <input
+              type="email"
+              id="email"
+              required
+              placeholder="tucorreo@dominio.com"
+            />
           </label>
 
           <label>
             Contraseña
-            <input type="password" id="password" required minlength="6" placeholder="Mínimo 6 caracteres" />
+            <input
+              type="password"
+              id="password"
+              required
+              minlength="6"
+              placeholder="Mínimo 6 caracteres"
+            />
           </label>
 
           <fieldset class="plan-fieldset">
@@ -57,30 +131,51 @@
 
             <label class="plan-option">
               <input type="radio" name="plan" value="basico" required />
-              <span><strong>Básico</strong> — S/ 25/mes · <small>Hasta 20 h · vigilancia</small></span>
+              <span
+                ><strong>Básico</strong> — S/ 25/mes ·
+                <small>Hasta 20 h · vigilancia</small></span
+              >
             </label>
 
             <label class="plan-option">
               <input type="radio" name="plan" value="estandar" />
-              <span><strong>Estándar</strong> — S/ 35/mes · <small>Uso ilimitado (1 sede) + carga solar</small></span>
+              <span
+                ><strong>Estándar</strong> — S/ 35/mes ·
+                <small>Uso ilimitado (1 sede) + carga solar</small></span
+              >
             </label>
 
             <label class="plan-option">
               <input type="radio" name="plan" value="premium" />
-              <span><strong>Premium</strong> — S/ 45/mes · <small>Todas las sedes + soporte 24 h</small></span>
+              <span
+                ><strong>Premium</strong> — S/ 45/mes ·
+                <small>Todas las sedes + soporte 24 h</small></span
+              >
             </label>
 
             <p class="hint">Podrás cambiar de plan después.</p>
           </fieldset>
 
           <!-- Botón para registrar rostro -->
-          <div class="row" style="align-items:center; justify-content:space-between;">
-            <button type="button" class="btn" id="btn-face">Registrar rostro</button>
+          <div
+            class="row"
+            style="align-items: center; justify-content: space-between"
+          >
+            <button type="button" class="btn" id="btn-face">
+              Registrar rostro
+            </button>
             <span id="faceBadge" class="hint">Aún no registrado</span>
           </div>
 
           <!-- El botón de registro se habilita al guardar rostro -->
-          <button class="btn btn--primary" id="btn-submit" type="submit" disabled>Registrarme</button>
+          <button
+            class="btn btn--primary"
+            id="btn-submit"
+            type="submit"
+            disabled
+          >
+            Registrarme
+          </button>
           <div id="msg" class="hint" aria-live="polite"></div>
         </form>
 
@@ -94,8 +189,10 @@
     <div class="modal-backdrop" id="modal">
       <div class="modal">
         <header>
-          <h3 style="margin:0">Registrar rostro</h3>
-          <button class="btn btn--ghost" type="button" id="closeModal">✕</button>
+          <h3 style="margin: 0">Registrar rostro</h3>
+          <button class="btn btn--ghost" type="button" id="closeModal">
+            ✕
+          </button>
         </header>
         <video id="mCam" autoplay muted playsinline></video>
         <div class="row">
@@ -121,120 +218,170 @@
           // persistimos el userId para el módulo facial
           localStorage.setItem("userId", email);
         },
-        isAuthed() { return localStorage.getItem("isAuthed") === "true"; },
-        getUser() { const d = localStorage.getItem("user"); return d ? JSON.parse(d) : null; },
+        isAuthed() {
+          return localStorage.getItem("isAuthed") === "true";
+        },
+        getUser() {
+          const d = localStorage.getItem("user");
+          return d ? JSON.parse(d) : null;
+        },
       };
       if (EBECO.isAuthed()) location.href = "seleccionar-accion.html";
 
       // ----------------- MÓDULO FACIAL INLINE -----------------
-      const MODEL_URL = 'assets/models';
-      const $modal = document.getElementById('modal');
-      const $mLog = document.getElementById('mLog');
-      const $mCam = document.getElementById('mCam');
-      const $btnFace = document.getElementById('btn-face');
-      const $badge = document.getElementById('faceBadge');
-      const $submit = document.getElementById('btn-submit');
+      const MODEL_URL = "assets/models";
+      const $modal = document.getElementById("modal");
+      const $mLog = document.getElementById("mLog");
+      const $mCam = document.getElementById("mCam");
+      const $btnFace = document.getElementById("btn-face");
+      const $badge = document.getElementById("faceBadge");
+      const $submit = document.getElementById("btn-submit");
 
       let faceOK = false;
       let stream = null;
-      async function mOpenCam(){
-        stream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:'user' }, audio:false });
-        $mCam.srcObject = stream; await $mCam.play();
-        $mLog.textContent = 'Cámara abierta.';
+      async function mOpenCam() {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: "user" },
+          audio: false,
+        });
+        $mCam.srcObject = stream;
+        await $mCam.play();
+        $mLog.textContent = "Cámara abierta.";
       }
-      function mCloseCam(){
-        if(stream){ stream.getTracks().forEach(t=>t.stop()); stream=null; $mCam.srcObject=null; }
+      function mCloseCam() {
+        if (stream) {
+          stream.getTracks().forEach((t) => t.stop());
+          stream = null;
+          $mCam.srcObject = null;
+        }
       }
-      async function loadModels(){
+      async function loadModels() {
         await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
         await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
         await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
       }
-      function normalize(v){ const n=Math.sqrt(v.reduce((s,x)=>s+x*x,0))||1; return v.map(x=>x/n); }
-      async function getEmbeddingFromVideo(){
-        const can=document.createElement('canvas'); can.width=480; can.height=360;
-        const ctx=can.getContext('2d'); ctx.drawImage($mCam,0,0,can.width,can.height);
+      function normalize(v) {
+        const n = Math.sqrt(v.reduce((s, x) => s + x * x, 0)) || 1;
+        return v.map((x) => x / n);
+      }
+      async function getEmbeddingFromVideo() {
+        const can = document.createElement("canvas");
+        can.width = 480;
+        can.height = 360;
+        const ctx = can.getContext("2d");
+        ctx.drawImage($mCam, 0, 0, can.width, can.height);
         const det = await faceapi
-          .detectSingleFace(can, new faceapi.TinyFaceDetectorOptions({inputSize:320, scoreThreshold:0.6}))
-          .withFaceLandmarks().withFaceDescriptor();
-        if(!det) throw new Error('No se detectó un rostro claro.');
+          .detectSingleFace(
+            can,
+            new faceapi.TinyFaceDetectorOptions({
+              inputSize: 320,
+              scoreThreshold: 0.6,
+            })
+          )
+          .withFaceLandmarks()
+          .withFaceDescriptor();
+        if (!det) throw new Error("No se detectó un rostro claro.");
         const box = det.detection?.box;
-        if(box && (box.width<120 || box.height<120)) throw new Error('Rostro muy lejos. Acércate.');
+        if (box && (box.width < 120 || box.height < 120))
+          throw new Error("Rostro muy lejos. Acércate.");
         return normalize(Array.from(det.descriptor));
       }
-      async function captureAvg(n=7, delay=100){
-        const acc=new Array(128).fill(0);
-        for(let i=0;i<n;i++){
-          const e=await getEmbeddingFromVideo();
-          for(let k=0;k<128;k++) acc[k]+=e[k];
-          await new Promise(r=>setTimeout(r,delay));
+      async function captureAvg(n = 7, delay = 100) {
+        const acc = new Array(128).fill(0);
+        for (let i = 0; i < n; i++) {
+          const e = await getEmbeddingFromVideo();
+          for (let k = 0; k < 128; k++) acc[k] += e[k];
+          await new Promise((r) => setTimeout(r, delay));
         }
-        for(let k=0;k<128;k++) acc[k]/=n;
+        for (let k = 0; k < 128; k++) acc[k] /= n;
         return normalize(acc);
       }
       // IndexedDB
-      const DB_NAME='ebeco-facial', STORE='templates';
-      function idbOpen(){
-        return new Promise((res,rej)=>{
-          const req=indexedDB.open(DB_NAME,1);
-          req.onupgradeneeded=()=>req.result.createObjectStore(STORE);
-          req.onsuccess=()=>res(req.result);
-          req.onerror=()=>rej(req.error);
+      const DB_NAME = "ebeco-facial",
+        STORE = "templates";
+      function idbOpen() {
+        return new Promise((res, rej) => {
+          const req = indexedDB.open(DB_NAME, 1);
+          req.onupgradeneeded = () => req.result.createObjectStore(STORE);
+          req.onsuccess = () => res(req.result);
+          req.onerror = () => rej(req.error);
         });
       }
-      async function saveTemplate(userId, emb){
-        const db=await idbOpen();
-        return new Promise((res,rej)=>{
-          const tx=db.transaction(STORE,'readwrite');
+      async function saveTemplate(userId, emb) {
+        const db = await idbOpen();
+        return new Promise((res, rej) => {
+          const tx = db.transaction(STORE, "readwrite");
           tx.objectStore(STORE).put(emb, userId);
-          tx.oncomplete=()=>res();
-          tx.onerror=()=>rej(tx.error);
+          tx.oncomplete = () => res();
+          tx.onerror = () => rej(tx.error);
         });
       }
 
       // Mostrar modal y flujos
       $btnFace.onclick = async () => {
-        const email = document.getElementById('email').value.trim();
-        if(!email){ alert('Primero escribe tu correo, lo usaremos como ID.'); return; }
-        $modal.style.display='grid';
-        $mLog.textContent='Cargando modelos…';
-        try{
+        const email = document.getElementById("email").value.trim();
+        if (!email) {
+          alert("Primero escribe tu correo, lo usaremos como ID.");
+          return;
+        }
+        $modal.style.display = "grid";
+        $mLog.textContent = "Cargando modelos…";
+        try {
           await loadModels();
           await mOpenCam();
-          $mLog.textContent='Listo. Acomoda tu rostro y presiona "Guardar rostro".';
-        }catch(e){ $mLog.textContent='Error: '+e.message; }
+          $mLog.textContent =
+            'Listo. Acomoda tu rostro y presiona "Guardar rostro".';
+        } catch (e) {
+          $mLog.textContent = "Error: " + e.message;
+        }
       };
-      document.getElementById('closeModal').onclick = () => { mCloseCam(); $modal.style.display='none'; };
-      document.getElementById('mClose').onclick = () => { mCloseCam(); };
-      document.getElementById('mOpen').onclick = () => { mOpenCam(); };
+      document.getElementById("closeModal").onclick = () => {
+        mCloseCam();
+        $modal.style.display = "none";
+      };
+      document.getElementById("mClose").onclick = () => {
+        mCloseCam();
+      };
+      document.getElementById("mOpen").onclick = () => {
+        mOpenCam();
+      };
 
-      document.getElementById('mSave').onclick = async () => {
-        try{
-          const email = document.getElementById('email').value.trim();
-          if(!email) throw new Error('Falta el correo.');
-          const emb = await captureAvg(7,100);
+      document.getElementById("mSave").onclick = async () => {
+        try {
+          const email = document.getElementById("email").value.trim();
+          if (!email) throw new Error("Falta el correo.");
+          const emb = await captureAvg(7, 100);
           await saveTemplate(email, emb);
           faceOK = true;
-          $badge.className='badge-ok';
-          $badge.textContent='Rostro registrado';
-          $submit.disabled = false;                  // habilitar "Registrarme"
-          $mLog.textContent='✅ Rostro guardado. Puedes cerrar la cámara.';
-        }catch(e){ $mLog.textContent='Error: '+e.message; }
+          $badge.className = "badge-ok";
+          $badge.textContent = "Rostro registrado";
+          $submit.disabled = false; // habilitar "Registrarme"
+          $mLog.textContent = "✅ Rostro guardado. Puedes cerrar la cámara.";
+        } catch (e) {
+          $mLog.textContent = "Error: " + e.message;
+        }
       };
 
       // ----------------- SUBMIT REGISTRO -----------------
       document.getElementById("regForm").addEventListener("submit", (e) => {
         e.preventDefault();
-        if (!faceOK) { alert("Por favor registra tu rostro antes de continuar."); return; }
+        if (!faceOK) {
+          alert("Por favor registra tu rostro antes de continuar.");
+          return;
+        }
 
         const name = document.getElementById("name").value.trim();
         const email = document.getElementById("email").value.trim();
         const password = document.getElementById("password").value;
-        if (!name || !email || !password) { alert("Completa todos los campos."); return; }
+        if (!name || !email || !password) {
+          alert("Completa todos los campos.");
+          return;
+        }
 
         EBECO.registerUser({ name, email, password });
         mCloseCam();
-        document.getElementById('msg').textContent = "Registro exitoso. ¡Bienvenido, " + name + "!";
+        document.getElementById("msg").textContent =
+          "Registro exitoso. ¡Bienvenido, " + name + "!";
         // Redirige a tu flujo principal
         location.href = "seleccionar-accion.html";
       });

@@ -1,71 +1,85 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>EBECO — Autenticación</title>
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body class="app">
-  <main class="screen">
-    <!-- Topbar -->
-    <header class="topbar" role="banner">
-    <button class="btn btn--ghost" onclick="history.back()" aria-label="Volver">←</button>
-    <h1 class="topbar__title" style="flex:1">EBECO</h1>
-    <img src="assets/logo-ebeco.png" 
-        alt="Logo EBECO" 
-        class="brand__logo"
-        style="width:80px;height:80px;object-fit:contain;border-radius:50%;background:transparent;box-shadow:none" />
-    </header>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>EBECO — Autenticación</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="app">
+    <main class="screen">
+      <!-- Topbar -->
+      <header class="topbar" role="banner">
+        <button
+          class="btn btn--ghost"
+          onclick="history.back()"
+          aria-label="Volver"
+        >
+          ←
+        </button>
+        <h1 class="topbar__title" style="flex: 1">EBECO</h1>
+        <img
+          src="assets/logo-ebeco.png"
+          alt="Logo EBECO"
+          class="brand__logo"
+          style="
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            border-radius: 50%;
+            background: transparent;
+            box-shadow: none;
+          "
+        />
+      </header>
 
-    <!-- Card principal -->
-    <section class="card u-grid stack-top" aria-labelledby="auth-title">
-      <h2 id="auth-title">Autenticación</h2>
-      <p class="u-muted" style="margin:0">
-        Elige un método de autenticación para vincular tu bicicleta.
-      </p>
+      <!-- Card principal -->
+      <section class="card u-grid stack-top" aria-labelledby="auth-title">
+        <h2 id="auth-title">Autenticación</h2>
+        <p class="u-muted" style="margin: 0">
+          Elige un método de autenticación para vincular tu bicicleta.
+        </p>
 
-      <!-- Opciones de autenticación -->
-      <nav class="tiles" aria-label="Métodos de autenticación">
-        <!-- Huella digital -->
-        <a class="tile tile--option" href="vinculando.html?modo=huella">
-          <span class="tile__icon">
-            <!-- ícono huella (SVG embebido) -->
-            <svg viewBox="0 0 24 24" aria-hidden="true" class="ico">
-              <path d="M12 2a7 7 0 0 0-7 7v2a1 1 0 0 0 2 0V9a5 5 0 1 1 10 0c0 5.523-1.477 8.5-4.5 10.5a1 1 0 1 0 1 1.732C17.099 19.94 19 16.4 19 9a7 7 0 0 0-7-7Z"/>
-              <path d="M7 11a1 1 0 0 0-2 0c0 4.104 1.224 6.76 3.9 8.5a1 1 0 1 0 1.1-1.664C7.93 16.93 7 14.77 7 11ZM12 6a3 3 0 0 0-3 3v2a1 1 0 1 0 2 0V9a1 1 0 1 1 2 0c0 3.827-.914 5.904-2.9 7.1a1 1 0 1 0 1 1.732C14.27 16.29 15 13.79 15 9a3 3 0 0 0-3-3Z"/>
-            </svg>
-          </span>
-          <div class="tile__body">
-            <div class="tile__title">Huella digital</div>
-            <small class="u-muted">Lectura biométrica desde el tótem</small>
-          </div>
-          <span class="chev" aria-hidden="true">›</span>
-        </a>
+        <!-- Opciones de autenticación -->
+        <nav class="tiles" aria-label="Métodos de autenticación">
+          <!-- Huella digital -->
 
-        <!-- Reconocimiento facial -->
+          <!-- Reconocimiento facial -->
           <a class="tile tile--option" href="verify-facial.html">
-          <span class="tile__icon">
-            <!-- ícono rostro (SVG embebido) -->
-            <svg viewBox="0 0 24 24" aria-hidden="true" class="ico">
-              <path d="M4 5a1 1 0 0 1 1-1h3V2H5a3 3 0 0 0-3 3v3h2V5Zm12-3v2h3a1 1 0 0 1 1 1v3h2V5a3 3 0 0 0-3-3h-3ZM2 16v3a3 3 0 0 0 3 3h3v-2H5a1 1 0 0 1-1-1v-3H2Zm20 0h-2v3a1 1 0 0 1-1 1h-3v2h3a3 3 0 0 0 3-3v-3Z"/>
-              <circle cx="9" cy="10" r="1.25"/>
-              <circle cx="15" cy="10" r="1.25"/>
-              <path d="M8 14s1.5 2 4 2 4-2 4-2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-            </svg>
-          </span>
-          <div class="tile__body">
-            <div class="tile__title">Reconocimiento facial</div>
-            <small class="u-muted">Validación con cámara del módulo</small>
-          </div>
-          <span class="chev" aria-hidden="true">›</span>
-        </a>
-      </nav>
+            <span class="tile__icon">
+              <!-- ícono rostro (SVG embebido) -->
+              <svg viewBox="0 0 24 24" aria-hidden="true" class="ico">
+                <path
+                  d="M4 5a1 1 0 0 1 1-1h3V2H5a3 3 0 0 0-3 3v3h2V5Zm12-3v2h3a1 1 0 0 1 1 1v3h2V5a3 3 0 0 0-3-3h-3ZM2 16v3a3 3 0 0 0 3 3h3v-2H5a1 1 0 0 1-1-1v-3H2Zm20 0h-2v3a1 1 0 0 1-1 1h-3v2h3a3 3 0 0 0 3-3v-3Z"
+                />
+                <circle cx="9" cy="10" r="1.25" />
+                <circle cx="15" cy="10" r="1.25" />
+                <path
+                  d="M8 14s1.5 2 4 2 4-2 4-2"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </span>
+            <div class="tile__body">
+              <div class="tile__title">Reconocimiento facial</div>
+              <small class="u-muted">Validación con cámara del módulo</small>
+            </div>
+            <span class="chev" aria-hidden="true">›</span>
+          </a>
+        </nav>
 
-      <div class="actions">
-        <a class="btn btn--danger btn--lg" href="seleccionar-accion.html">Cancelar</a>
-      </div>
-    </section>
-  </main>
-</body>
+        <div class="actions">
+          <a class="btn btn--danger btn--lg" href="seleccionar-accion.html"
+            >Cancelar</a
+          >
+        </div>
+      </section>
+    </main>
+  </body>
 </html>
