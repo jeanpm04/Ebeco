@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <title>EBECO — Invitado (PIN)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        padding: 16px;
+        background: #f8fafc;
+        color: #0f172a;
+      }
+      h1 {
+        margin-bottom: 0.5rem;
+      }
+      button,
+      input {
+        padding: 10px 14px;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        font-size: 1rem;
+      }
+      button {
+        background: #2563eb;
+        color: white;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #1d4ed8;
+      }
+      .row {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+      }
+      .card {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 16px;
+        margin-top: 12px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+      }
+      pre,
+      .mono {
+        font-family: ui-monospace, monospace;
+      }
+      .ok {
+        color: #16a34a;
+      }
+      .err {
+        color: #b91c1c;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>EBECO — Invitado</h1>
+    <p>Usa esta pantalla para generar o ingresar tu PIN de bicicleta.</p>
+
+    <div class="row">
+      <button id="btnConn">Conectar</button>
+      <span id="status">Sin conexión</span>
+    </div>
+
+    <div class="card">
+      <h2>PIN vigente</h2>
+      <div class="row">
+        <button id="btnPinQ">Mostrar PIN</button>
+        <pre id="pinBox" class="mono"></pre>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Ingresar PIN para liberar</h2>
+      <div class="row">
+        <input id="inPin" placeholder="####" maxlength="6" class="mono" />
+        <button id="btnChk">Liberar</button>
+      </div>
+      <div id="chkResp" class="mono"></div>
+    </div>
+
+    <div class="card">
+      <h2>Generar nuevo PIN (opcional)</h2>
+      <div class="row">
+        <label>Horas válidas:</label>
+        <input
+          id="inHours"
+          type="number"
+          min="1"
+          max="72"
+          value="8"
+          style="width: 5rem"
+        />
+        <button id="btnGen">Generar</button>
+      </div>
+      <div id="genResp" class="mono"></div>
+    </div>
+
+    <script>
+      let port, reader, writer, decoder;
+      const enc = new TextEncoder();
+      const $ = (id) => document.getElementById(id);
+
+      function setStatus(t, cls = "") {
+        $("status").textContent = t;
+        $("status").className = cls;
+      }
+
+      async function ensureConn() {
+        if (!("serial" in navigator)) {
+          setStatus("Web Serial no soportado", "err");
+          throw new Error("No Web Serial");
+        }
+        if (!port) port = await navigator.serial.requestPort();
+        if (!port.readable || !port.writable) {
+          await port.open({ baudRate: 115200 });
+          await new Promise((r) => setTimeout(r, 800));
+          writer = port.writable.getWriter();
+          reader = port.readable.getReader();
+          decoder = new TextDecoder();
+          setStatus("Conectado ✓", "ok");
+        }
+      }
+      async function sendLine(s) {
+        await writer.write(enc.encode(s + "\n"));
+      }
+      async function readLine(timeout = 3000) {
+        let buf = "";
+        const start = Date.now();
+        while (true) {
+          const { value, done } = await reader.read();
+          if (done) break;
+          if (value) {
+            buf += decoder.decode(value);
+            const lines = buf.split(/\r?\n/);
+            if (lines.length > 1) return lines.shift().trim();
+          }
+          if (Date.now() - start > timeout) throw new Error("Timeout");
+        }
+        throw new Error("Sin respuesta");
+      }
+
+      $("btnConn").onclick = async () => {
+        try {
+          await ensureConn();
+        } catch (e) {
+          setStatus(e.message, "err");
+        }
+      };
+
+      $("btnPinQ").onclick = async () => {
+        try {
+          await ensureConn();
+          await sendLine("PIN?");
+          const r = await readLine();
+          $("pinBox").textContent = r;
+        } catch (e) {
+          $("pinBox").textContent = "Error: " + e.message;
+        }
+      };
+
+      $("btnChk").onclick = async () => {
+        try {
+          await ensureConn();
+          const pin = ($("inPin").value || "").trim();
+          if (!pin) return alert("Ingresa el PIN");
+          await sendLine("CHK:" + pin);
+          const r = await readLine();
+          $("chkResp").textContent = r;
+          alert(r === "OK" ? "✅ Bicicleta liberada" : "Error: " + r);
+        } catch (e) {
+          $("chkResp").textContent = "Error: " + e.message;
+        }
+      };
+
+      $("btnGen").onclick = async () => {
+        try {
+          await ensureConn();
+          const h = parseInt($("inHours").value, 10) || 8;
+          await sendLine("GEN:" + h);
+          const r = await readLine();
+          $("genResp").textContent = r;
+          if (r.startsWith("PIN:")) alert("Nuevo " + r);
+        } catch (e) {
+          $("genResp").textContent = "Error: " + e.message;
+        }
+      };
+
+      window.addEventListener("beforeunload", async () => {
+        try {
+          await reader?.cancel();
+        } catch {}
+        try {
+          reader?.releaseLock();
+          writer?.releaseLock();
+        } catch {}
+        try {
+          await port?.close();
+        } catch {}
+      });
+    </script>
+  </body>
+</html>

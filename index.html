@@ -24,7 +24,6 @@
         opacity: 0.8;
         margin-top: 8px;
       }
-      /* Opcional: estética del botón salir */
       .btn--ghost {
         background: transparent;
         border: 1px solid #225d26;
@@ -37,6 +36,11 @@
       .btn--ghost:hover {
         background: #225d26;
         color: #fff;
+      }
+      .actions {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
       }
     </style>
   </head>
@@ -68,16 +72,34 @@
             Protege tu bicicleta con la solución eco-segura con precios
             accesibles.
           </p>
+          <p
+            class="welcome__subtitle"
+            style="font-weight: bold; padding-top: 1rem"
+          >
+            Inicia sesión para ver los planes
+          </p>
         </div>
 
         <div class="actions">
+          <!-- Solo cambia la etiqueta: Comenzar -> Iniciar sesión -->
           <button
             id="btnStart"
             class="btn btn--primary btn--lg"
-            aria-label="Comenzar"
+            aria-label="Iniciar sesión"
           >
-            Comenzar
+            Iniciar sesión
           </button>
+
+          <!-- NUEVO: Entrar como invitado (no elimina nada previo) -->
+          <button
+            id="btnGuest"
+            class="btn btn--secondary btn--lg"
+            aria-label="Entrar como invitado"
+            style="background-color: dodgerblue"
+          >
+            Entrar como invitado
+          </button>
+
           <div id="msg" class="hint" aria-live="polite">Sin conexión</div>
         </div>
       </section>
@@ -107,12 +129,13 @@
       document.getElementById("year").textContent = new Date().getFullYear();
 
       const btn = document.getElementById("btnStart");
+      const btnGuest = document.getElementById("btnGuest");
       const msg = document.getElementById("msg");
       const logoutBtn = document.getElementById("logoutBtn");
       const userBar = document.getElementById("userBar");
       const userGreeting = document.getElementById("userGreeting");
 
-      // Si hay sesión, muestra saludo y botón salir
+      // Si hay sesión, muestra saludo y botón salir (MISMO COMPORTAMIENTO)
       (function hydrateUserBar() {
         if (EBECO.isAuthed && EBECO.isAuthed()) {
           const user = EBECO.getCurrentUser ? EBECO.getCurrentUser() : null;
@@ -124,17 +147,19 @@
         }
       })();
 
-      // Cerrar sesión
+      // Cerrar sesión (MISMO)
       logoutBtn.addEventListener("click", () => {
         EBECO.logoutUser && EBECO.logoutUser();
+        localStorage.removeItem("ebeco-guest");
         alert("Sesión cerrada correctamente.");
-        location.reload(); // recarga index sin sesión
+        location.reload();
       });
 
       function setMsg(t) {
         msg.textContent = t;
       }
 
+      // === MISMO handleStart que ya tenías (NO BORRADO) ===
       async function handleStart() {
         // Si NO está autenticado, directo a login
         if (!EBECO.isAuthed || !EBECO.isAuthed()) {
@@ -142,6 +167,7 @@
           return;
         }
 
+        // Si está autenticado: intenta permiso Web Serial y continúa
         const NEXT_URL = "seleccionar-accion.html";
 
         if (!("serial" in navigator)) {
@@ -158,10 +184,11 @@
           const grantedPorts = await navigator.serial.getPorts();
           if (grantedPorts.length > 0) {
             localStorage.setItem("ebeco-serial-permission", "granted");
-            return;
+          } else {
+            const port = await navigator.serial.requestPort();
+            if (port)
+              localStorage.setItem("ebeco-serial-permission", "granted");
           }
-          const port = await navigator.serial.requestPort();
-          if (port) localStorage.setItem("ebeco-serial-permission", "granted");
         } catch (err) {
           console.warn("Permiso no concedido:", err?.name || err);
           localStorage.removeItem("ebeco-serial-permission");
@@ -171,7 +198,39 @@
         }
       }
 
-      btn.addEventListener("click", handleStart);
+      // === NUEVO: Invitado SIN tocar el flujo anterior ===
+      async function handleGuest() {
+        // Marca de invitado (útil si quieres limitar funciones luego)
+        localStorage.setItem("ebeco-guest", "1");
+        const NEXT_URL = "seleccionar-accion.html";
+
+        // Intento NO BLOQUEANTE de permiso Web Serial (opcional)
+        if ("serial" in navigator) {
+          try {
+            setMsg("Comprobando permisos de puerto…");
+            const granted = await navigator.serial.getPorts();
+            if (!granted.length) {
+              await navigator.serial.requestPort();
+            }
+            localStorage.setItem("ebeco-serial-permission", "granted");
+          } catch {
+            // si cancela o falla, seguimos como invitado igual
+          }
+        } else {
+          setMsg(
+            "Tu navegador no soporta Web Serial. Continuando sin hardware…"
+          );
+        }
+
+        window.location.href = NEXT_URL;
+      }
+
+      document
+        .getElementById("btnStart")
+        .addEventListener("click", handleStart);
+      document
+        .getElementById("btnGuest")
+        .addEventListener("click", handleGuest);
     </script>
   </body>
 </html>

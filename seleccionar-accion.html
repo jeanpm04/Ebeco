@@ -8,10 +8,21 @@
     />
     <title>EBECO — Seleccionar acción</title>
     <link rel="stylesheet" href="styles.css" />
+    <style>
+      /* Banner de bienvenida */
+      .welcome-banner {
+        margin: 0.25rem 0 0.75rem 0;
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.5rem;
+        background: #f1f5f9;
+        color: #0f172a;
+        font-weight: 600;
+      }
+    </style>
   </head>
   <body class="app">
     <main class="screen">
-      <!-- Topbar reutilizable -->
+      <!-- Topbar -->
       <header class="topbar" role="banner">
         <button
           class="btn btn--ghost"
@@ -43,25 +54,30 @@
       >
         <h2 id="acciones-title" style="margin: 0">Seleccionar la acción</h2>
 
+        <!-- Banner de bienvenida -->
+        <div
+          id="welcomeBanner"
+          class="welcome-banner"
+          style="display: none"
+        ></div>
+
         <nav class="list" aria-label="Acciones principales">
-          <!-- Estacionar bicicleta -->
-          <a class="item" href="verify-facial.html">
+          <!-- Estacionar bicicleta (redirige según rol) -->
+          <a id="linkEstacionar" class="item" href="verify-facial.html">
             <div style="display: flex; align-items: center; gap: 0.75rem">
-              <!--<span aria-hidden="true" style="font-size:1.25rem">🔒</span>-->
               <div>
                 <div class="u-bold">Estacionar bicicleta</div>
-                <small class="u-muted"
-                  >Bloquea y registra tu bici en un slot</small
-                >
+                <small id="subEstacionar" class="u-muted">
+                  Bloquea y registra tu bici en un slot
+                </small>
               </div>
             </div>
             <span aria-hidden="true">›</span>
           </a>
 
-          <!-- Liberar bicicleta -->
-          <a class="item" href="metodo-pago.html">
+          <!-- Liberar bicicleta (solo usuarios logueados) -->
+          <a id="linkLiberar" class="item" href="metodo-pago.html">
             <div style="display: flex; align-items: center; gap: 0.75rem">
-              <!--<span aria-hidden="true" style="font-size:1.25rem">🔓</span>-->
               <div>
                 <div class="u-bold">Liberar bicicleta</div>
                 <small class="u-muted">Desbloquea y realiza el pago</small>
@@ -70,10 +86,9 @@
             <span aria-hidden="true">›</span>
           </a>
 
-          <!-- Historial -->
-          <a class="item" href="historial.html">
+          <!-- Historial (solo usuarios logueados) -->
+          <a id="linkHistorial" class="item" href="historial.html">
             <div style="display: flex; align-items: center; gap: 0.75rem">
-              <!--<span aria-hidden="true" style="font-size:1.25rem">🕘</span>-->
               <div>
                 <div class="u-bold">Historial</div>
                 <small class="u-muted">Ingresos, salidas y pagos</small>
@@ -84,6 +99,7 @@
         </nav>
       </section>
     </main>
+
     <script>
       let port, reader, writer;
 
@@ -116,7 +132,6 @@
           await port.open({ baudRate: 115200 });
           setMsg?.("Conectado por Serial.");
 
-          // Preparar writer/reader si los necesitas en esta pantalla:
           writer = port.writable?.getWriter?.();
           const textDecoder = new TextDecoder();
 
@@ -137,20 +152,20 @@
             }
           })();
 
-          // Ejemplo: función para enviar líneas
           window.ebecoSend = async (text) => {
             if (!writer) return;
             const data = new TextEncoder().encode(text + "\n");
             await writer.write(data);
           };
 
-          // Cierre ordenado al salir
           window.addEventListener("beforeunload", async () => {
             try {
               if (writer) {
                 writer.releaseLock();
                 writer = null;
               }
+            } catch {}
+            try {
               if (port) {
                 await port.close();
                 port = null;
@@ -163,11 +178,57 @@
         }
       }
 
-      // Llama al iniciar la pantalla
-      document.addEventListener("DOMContentLoaded", openSerialIfGranted);
+      // Banner de bienvenida + ruteo por rol
+      function hydrateWelcomeBanner() {
+        const el = document.getElementById("welcomeBanner");
+        const linkHist = document.getElementById("linkHistorial");
+        const linkLiberar = document.getElementById("linkLiberar");
+        const linkEst = document.getElementById("linkEstacionar");
+        const subEst = document.getElementById("subEstacionar");
+        if (!el || !linkEst || !subEst) return;
+
+        const isAuthed = window.EBECO?.isAuthed && window.EBECO.isAuthed();
+        if (isAuthed) {
+          const user = window.EBECO?.getCurrentUser?.() || {};
+          const name = user.name || user.displayName || "Usuario";
+          el.textContent = `Bienvenido ${name}`;
+          el.style.display = "block";
+          // Usuario logueado: estacionar con reconocimiento facial
+          linkEst.href = "verify-facial.html";
+          subEst.textContent = "Validación facial y registro del slot";
+          // Mostrar opciones avanzadas
+          if (linkHist) linkHist.style.display = "";
+          if (linkLiberar) linkLiberar.style.display = "";
+          return;
+        }
+
+        // Invitado
+        const isGuest = localStorage.getItem("ebeco-guest") === "1";
+        if (isGuest) {
+          el.textContent = "Bienvenido Invitado";
+          el.style.display = "block";
+          // Invitado: estacionar con PIN (no facial)
+          linkEst.href = "pin-invitado.html";
+          subEst.textContent = "Genera/usa PIN temporal para el candado";
+          // Ocultar opciones de cuenta
+          if (linkHist) linkHist.style.display = "none";
+          if (linkLiberar) linkLiberar.style.display = "none";
+          return;
+        }
+
+        // Fallback (sin estado claro): dejar todo visible y usar facial
+        linkEst.href = "verify-facial.html";
+        subEst.textContent = "Bloquea y registra tu bici en un slot";
+        if (linkHist) linkHist.style.display = "";
+        if (linkLiberar) linkLiberar.style.display = "";
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        hydrateWelcomeBanner();
+        openSerialIfGranted();
+      });
     </script>
 
-    <!-- En tu HTML puedes tener un pequeño estado -->
     <div
       id="serialStatus"
       style="font-size: 0.9rem; opacity: 0.8; margin-top: 8px"
